@@ -1,4 +1,4 @@
-# Petsverse Web
+# Glitch Bridge Web
 
 This project contains the main features of the Petsverse web.
 
