@@ -1,0 +1,10 @@
+export { default as Logo } from './Icons/Logo'
+export { default as Twitter } from './Icons/Twitter'
+export { default as Telegram } from './Icons/Telegram'
+export { default as Reddit } from './Icons/Reddit'
+export { default as Discord } from './Icons/Discord'
+export { default as CloseIcon } from './Icons/Close'
+export { default as Linktree } from './Icons/Linktree'
+
+export { default as Svg } from './Svg'
+export type { SvgProps } from './types'

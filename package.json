@@ -1,0 +1,64 @@
+{
+  "name": "glitch-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "check-types": "tsc --noemit",
+    "eslint": "eslint src/**/*.{ts,tsx}",
+    "lint": "npm run eslint",
+    "format:check:staged": "lint-staged",
+    "format:check": "prettier --check \"**/*.{js,jsx,ts,tsx,json}\"",
+    "format:write": "prettier --write \"**/*.{js,jsx,ts,tsx,json}\"",
+    "prepare": "husky install"
+  },
+  "dependencies": {
+    "@types/react-modal": "^3.13.1",
+    "axios": "^0.27.2",
+    "lint-staged": "^13.0.3",
+    "lodash": "^4.17.21",
+    "next": "12.2.2",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "react-hook-form": "^7.34.2",
+    "react-modal": "^3.15.1",
+    "react-toastify": "^9.0.8",
+    "styled-components": "^5.3.5",
+    "styled-system": "^5.1.5"
+  },
+  "devDependencies": {
+    "@next/eslint-plugin-next": "^12.2.2",
+    "@pancakeswap/eslint-config-pancake": "^1.2.0",
+    "@stylelint/postcss-css-in-js": "^0.38.0",
+    "@types/lodash": "^4.14.182",
+    "@types/node": "18.0.3",
+    "@types/react": "18.0.15",
+    "@types/react-dom": "18.0.6",
+    "@types/styled-components": "^5.1.25",
+    "@types/styled-system": "^5.1.15",
+    "@typescript-eslint/parser": "^5.30.5",
+    "autoprefixer": "^10.4.7",
+    "babel-plugin-macros": "^3.1.0",
+    "eslint": "^7.32.0",
+    "eslint-config-next": "12.2.2",
+    "eslint-plugin-lodash": "^7.4.0",
+    "husky": "^8.0.1",
+    "postcss": "^8.4.14",
+    "prettier": "^2.7.1",
+    "stylelint": "^14.9.1",
+    "stylelint-config-prettier": "^9.0.3",
+    "stylelint-config-recommended": "^8.0.0",
+    "stylelint-config-standard": "^26.0.0",
+    "stylelint-config-styled-components": "^0.1.1",
+    "tailwindcss": "^3.1.6",
+    "twin.macro": "^2.8.2",
+    "typescript": "4.7.4"
+  },
+  "babelMacros": {
+    "twin": {
+      "preset": "styled-components"
+    }
+  }
+}

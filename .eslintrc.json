@@ -1,0 +1,26 @@
+{
+  "env": {
+    "es6": true,
+    "browser": true
+  },
+  "plugins": ["lodash"],
+  "extends": [
+    "@pancakeswap/eslint-config-pancake",
+    "next/core-web-vitals",
+    "plugin:react/jsx-runtime",
+    "plugin:@next/next/recommended"
+  ],
+  "rules": {
+    "import/no-unresolved": 0,
+    "import/prefer-default-export": 0,
+    "no-console": ["warn", { "allow": ["info", "warn", "error", "debug"] }],
+    "no-plusplus": 0,
+    "prefer-destructuring": ["warn", { "object": true, "array": false }],
+    "no-underscore-dangle": 0,
+    "lodash/import-scope": [2, "method"],
+    "@next/next/no-img-element": 0,
+    "no-sparse-arrays": 0,
+    "react/require-default-props": 0,
+    "jsx-a11y/anchor-is-valid": 0
+  }
+}
