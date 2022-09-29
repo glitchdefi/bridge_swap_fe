@@ -11,6 +11,8 @@ import { GlobalStyles } from 'styles/GlobalStyles'
 import { LanguageProvider } from 'contexts/Localization'
 import { Header } from 'components/Header'
 import { ThemeProvider } from 'styles/theme/themeContext'
+import { Container } from 'components/Layout'
+import { Footer } from 'components/Footer'
 
 // const ProductionErrorBoundary = process.env.NODE_ENV === 'production' ? ErrorBoundary : Fragment
 
@@ -27,9 +29,12 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const Layout = Component.Layout || Fragment
   return (
     <>
-      <Header />
       <Layout>
-        <Component {...pageProps} />
+        <Container>
+          <Header />
+          <Component {...pageProps} />
+          <Footer />
+        </Container>
       </Layout>
     </>
   )

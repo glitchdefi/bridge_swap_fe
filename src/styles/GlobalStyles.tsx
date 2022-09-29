@@ -13,6 +13,18 @@ export const GlobalStyles = createGlobalStyle`
     --color-success: #49AA19;
     --color-pending: #D87A16;
     --color-fail: #D32029;
+
+    --bg-1: #FAFAFA;
+    --color-magenta2: #480049;
+    
+    --color-1: #395660;
+    --color-2: #FFFFFF;
+    --color-3: #1C2A2F;
+    --color-4: #23353b;
+    --color-5: #151F23;
+    --color-6: #4F7785;
+    --color-7: #A7C1CA;
+    --color-8: #E5ECEF;
   }
   .dark {
     --color-primary: #00FFFF;
@@ -20,10 +32,22 @@ export const GlobalStyles = createGlobalStyle`
     --color-success: #49AA19;
     --color-pending: #D87A16;
     --color-fail: #D32029;
+
+    --bg-1: #FAFAFA;
+
+    --color-1: #395660;
+    --color-2: #FFFFFF;
+    --color-3: #1C2A2F;
+    --color-4: #23353b;
+    --color-5: #151F23;
+    --color-6: #4F7785;
+    --color-7: #A7C1CA;
+    --color-8: #E5ECEF;
+    --color-magenta2: #480049;
   }
 
   html {
-    font-size: 16px;
+    font-size: 14px;
     font-family: "IBM Plex Mono", monospace !important;
     font-weight: 400;
   }

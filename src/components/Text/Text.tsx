@@ -1,24 +1,17 @@
-import styled from 'styled-components'
+import { styled, theme } from 'twin.macro'
 import { space, typography, layout } from 'styled-system'
 import { TextProps } from './types'
 
-// interface ThemedProps extends TextProps {
-//   theme: DefaultTheme
-// }
-
-// const getColor = ({ color, theme }: ThemedProps) => {
-//   return getThemeValue(`colors.${color}`, color)(theme)
-// }
-
-const getFontSize = ({ fontSize, small }: TextProps) => {
-  return small ? '14px' : fontSize || '16px'
+const getFontSize = ({ fontSize, large }: TextProps) => {
+  return large ? '16px' : fontSize || '14px'
 }
 
 const Text = styled.div<TextProps>`
-  color: ${({ color }) => color};
+  color: ${({ color }) => color || theme`colors.color2`};
   font-size: ${getFontSize};
   font-weight: ${({ bold }) => (bold ? 600 : 400)};
   line-height: 1.5;
+  font-feature-settings: 'zero' on;
   ${({ textTransform }) => textTransform && `text-transform: ${textTransform};`}
   ${({ ellipsis }) =>
     ellipsis &&
@@ -31,7 +24,7 @@ const Text = styled.div<TextProps>`
 `
 
 Text.defaultProps = {
-  small: false,
+  large: false,
   ellipsis: false,
 }
 
