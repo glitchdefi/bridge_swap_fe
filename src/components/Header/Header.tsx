@@ -1,17 +1,17 @@
-/* eslint-disable import/no-extraneous-dependencies */
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-/* eslint-disable jsx-a11y/anchor-is-valid */
-import React, { useEffect } from 'react'
-import styled from 'styled-components'
-import Link from 'next/link'
+import React, { useCallback, useState } from 'react'
+import { styled } from 'twin.macro'
+import { useRouter } from 'next/router'
+import { useAccount } from 'wagmi'
 
-import { useToggleMobileMenu } from 'hooks/useToggleMobileMenu'
+import { useMetamask } from 'hooks/useMetamask'
 
-import { colors } from 'styles/Colors'
-import { media } from 'styles/media'
+// Components
 import { OutlineButton } from 'components/Button'
-import { ThemeToggle } from './ThemeToggle'
+import { ThemeToggle } from './components/ThemeToggle'
+import { HistoryBox } from './components/HistoryBox'
+import { AccountInfo } from './components/AccountInfo'
+import { MetamaskInfoModal } from './components/MetamaskInfoModal'
+import { GlitchInfoModal } from './components/GlitchInfoModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -28,36 +28,56 @@ const Wrapper = styled.div`
 `
 
 const Header: React.FC = () => {
-  const { isOpenNavMobile, toggleNavMobile } = useToggleMobileMenu()
+  const router = useRouter()
+  const { isConnected } = useAccount()
+  const { onConnect } = useMetamask()
 
-  const handleScroll = () => {
-    const navbar: HTMLElement = document.getElementById('navbar')
+  const [isOpenMetamaskInfoModal, setIsOpenMetamaskInfoModal] = useState<boolean>(false)
+  const [isOpenGlitchInfoModal, setIsOpenGlitchInfoModal] = useState<boolean>(false)
 
-    if (window.pageYOffset >= 1) {
-      navbar.classList.add('sticky')
-    } else {
-      navbar.classList.remove('sticky')
-    }
-  }
+  const goToHome = useCallback(() => {
+    router.push('/')
+  }, [router])
 
-  useEffect(() => {
-    // window.addEventListener('scroll', handleScroll)
-    // return () => {
-    //   window.removeEventListener('scroll', handleScroll)
-    // }
+  const toggleOpenMetamaskInfoModal = useCallback(() => {
+    setIsOpenMetamaskInfoModal((prev) => !prev)
+  }, [])
+
+  const toggleOpenGlitchInfoModal = useCallback(() => {
+    setIsOpenGlitchInfoModal((prev) => !prev)
   }, [])
 
   return (
     <Wrapper>
-      <img className="header-logo" src="./images/logo-with-text.png" alt="logo" />
-      <div className="flex flex-row items-center">
-        <OutlineButton>
-          <img src="./images/logo-metamask.png" alt="metamask-logo" />
-          <span>Connect with Metamask</span>
-        </OutlineButton>
+      <div role="button" tabIndex={0} className="cursor-pointer" onClick={goToHome}>
+        <img className="header-logo" src="./images/logo-with-text.png" alt="logo" />
+      </div>
+
+      <div className="flex items-center">
+        {isConnected ? (
+          <div className="flex items-center">
+            {/* <div className="mr-4">
+              <AccountInfo isGlitchNetwork onClick={toggleOpenGlitchInfoModal} />
+            </div> */}
+            <div className="mr-4">
+              <AccountInfo onClick={toggleOpenMetamaskInfoModal} />
+            </div>
+            <HistoryBox />
+          </div>
+        ) : (
+          <OutlineButton onClick={() => onConnect()}>
+            <img src="./images/logo-metamask.png" alt="metamask-logo" />
+            <span>Connect with Metamask</span>
+          </OutlineButton>
+        )}
+
         <span className="mx-4 text-color1"> | </span>
         <ThemeToggle />
       </div>
+
+      {/* Modals */}
+      {isConnected && <MetamaskInfoModal isOpen={isOpenMetamaskInfoModal} onClose={toggleOpenMetamaskInfoModal} />}
+      <GlitchInfoModal isOpen={isOpenGlitchInfoModal} onClose={toggleOpenGlitchInfoModal} />
     </Wrapper>
   )
 }

@@ -16,6 +16,7 @@ export const GlobalStyles = createGlobalStyle`
 
     --bg-1: #FAFAFA;
     --color-magenta2: #480049;
+    --color-red3: #58181C;
     
     --color-1: #395660;
     --color-2: #FFFFFF;
@@ -25,6 +26,7 @@ export const GlobalStyles = createGlobalStyle`
     --color-6: #4F7785;
     --color-7: #A7C1CA;
     --color-8: #E5ECEF;
+    --color-9: #C1D4DA;
   }
   .dark {
     --color-primary: #00FFFF;
@@ -34,6 +36,8 @@ export const GlobalStyles = createGlobalStyle`
     --color-fail: #D32029;
 
     --bg-1: #FAFAFA;
+    --color-magenta2: #480049;
+    --color-red3: #58181C;
 
     --color-1: #395660;
     --color-2: #FFFFFF;
@@ -43,8 +47,17 @@ export const GlobalStyles = createGlobalStyle`
     --color-6: #4F7785;
     --color-7: #A7C1CA;
     --color-8: #E5ECEF;
-    --color-magenta2: #480049;
+    --color-9: #C1D4DA;
   }
+
+  :root {
+  --toastify-font-family: "IBM Plex Mono", monospace, sans-serif;
+  --toastify-color-dark: var(--color-3);
+  --toastify-text-color-dark: var(--color-8);
+  --toastify-color-progress-light: var(--color-primary);
+  --toastify-color-progress-success: var(--toastify-color-progress-light);
+  --toastify-color-success: var(--color-success);
+}
 
   html {
     font-size: 14px;
@@ -69,13 +82,27 @@ export const GlobalStyles = createGlobalStyle`
     vertical-align: center;
     transition: all 0.3s ease 0s;
   }
-`
 
-// :root {
-//   --toastify-font-family: "Montserrat", arial, sans-serif;
-//   --toastify-color-dark: ${colors.bg1};
-//   --toastify-text-color-dark: ${colors.txt};
-//   --toastify-color-progress-light: ${colors.sliderDotActiveBg};
-//   --toastify-color-progress-success: var(--toastify-color-progress-light);
-//   --toastify-color-success: ${colors.green};
-// }
+  .secondary-outline-btn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border: 1px solid var(--color-1);
+    padding: 8px 16px;
+    height: 40px;
+    cursor: pointer;
+
+    font-weight: 600;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--color-8);
+  }
+
+  .text-link {
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 22px;
+    text-decoration-line: underline;
+    color: var(--color-primary);
+  }
+`

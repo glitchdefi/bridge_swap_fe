@@ -15,10 +15,14 @@ const Wrap = styled.div`
   margin-right: 24px;
 `
 
-export const SwitchButton: React.FC = () => {
+interface Props {
+  onClick?: () => void
+}
+
+export const SwitchButton: React.FC<Props> = ({ onClick }) => {
   return (
-    <Wrap>
-      <HorizontalSwap width={37} height={37} />
+    <Wrap onClick={onClick}>
+      <HorizontalSwap width={37} height={37} color={theme`colors.primary`} />
     </Wrap>
   )
 }

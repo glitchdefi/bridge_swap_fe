@@ -27,6 +27,16 @@ const StyledPrimaryButton = styled(StyledBaseButton)`
     font-weight: 600;
     color: ${theme`colors.color5`};
   }
+
+  &.disabled {
+    background: #535d60;
+    box-shadow: none;
+    cursor: not-allowed;
+
+    span {
+      color: ${theme`colors.color1`};
+    }
+  }
 `
 
 export default StyledPrimaryButton

@@ -1,18 +1,31 @@
 import { Fragment } from 'react'
 import type { AppProps } from 'next/app'
+import dynamic from 'next/dynamic'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { ToastContainer } from 'react-toastify'
+import { configureChains, chain, createClient, WagmiConfig } from 'wagmi'
+import { publicProvider } from 'wagmi/providers/public'
+
+// Styles
+import { GlobalStyles } from 'styles/GlobalStyles'
+import { ThemeProvider } from 'styles/theme/themeContext'
+
+// Constants
+import { bscTestnet } from 'constants/supportedNetworks'
+
+// Context
+import { LanguageProvider } from 'contexts/Localization'
+
+// Components
+// import { Header } from 'components/Header'
+import { Container } from 'components/Layout'
+import { Footer } from 'components/Footer'
 
 import 'styles/css/tailwindcss.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-import { GlobalStyles } from 'styles/GlobalStyles'
-import { LanguageProvider } from 'contexts/Localization'
-import { Header } from 'components/Header'
-import { ThemeProvider } from 'styles/theme/themeContext'
-import { Container } from 'components/Layout'
-import { Footer } from 'components/Footer'
+const Header = dynamic(() => import('components/Header/Header'), { ssr: false })
 
 // const ProductionErrorBoundary = process.env.NODE_ENV === 'production' ? ErrorBoundary : Fragment
 
@@ -40,6 +53,14 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   )
 }
 
+const { provider, webSocketProvider } = configureChains([chain.goerli, bscTestnet], [publicProvider()])
+
+const client = createClient({
+  autoConnect: true,
+  provider,
+  webSocketProvider,
+})
+
 const MyApp: React.FC<AppProps> = (props) => {
   return (
     <>
@@ -57,13 +78,15 @@ const MyApp: React.FC<AppProps> = (props) => {
         <title>Glitch Bridge</title>
       </Head>
 
-      <LanguageProvider>
-        <GlobalStyles />
-        <ThemeProvider>
-          <App {...props} />
-        </ThemeProvider>
-      </LanguageProvider>
-      <ToastContainer theme="dark" />
+      <WagmiConfig client={client}>
+        <LanguageProvider>
+          <GlobalStyles />
+          <ThemeProvider>
+            <App {...props} />
+          </ThemeProvider>
+        </LanguageProvider>
+        <ToastContainer theme="dark" />
+      </WagmiConfig>
     </>
   )
 }

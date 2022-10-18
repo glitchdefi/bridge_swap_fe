@@ -1,12 +1,15 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React from 'react'
+import React, { useState } from 'react'
 import { styled, theme } from 'twin.macro'
-import { PrimaryButton } from 'components/Button'
-import { OutlineDownArrow } from 'components/Svg'
+import { useAccount, useNetwork } from 'wagmi'
+
+import { checkUnsupportedChain } from 'utils/checkUnsupportedChain'
+
+// Components
 import { Text } from 'components/Text'
-import { AmountInput } from './components/AmountInput'
-import { BalanceView } from './components/BalanceView'
-import { SwitchButton } from './components/SwitchButton'
+import { UnsupportedNetworkView } from './components/UnsupportedNetworkView'
+import { StepOne } from './components/StepOne'
+import { StepTwo } from './components/StepTwo'
 
 const Wrapper = styled.div`
   margin-top: 32px;
@@ -32,65 +35,42 @@ const CardContent = styled.div`
   padding: 32px;
 `
 
-const SelectInput = styled.div`
-  padding: 16px;
-  border: 1px solid ${theme`colors.color4`};
-  user-select: none;
-  cursor: pointer;
-  flex: 1;
-`
-
 const Home: React.FC = () => {
+  const { isConnected } = useAccount()
+  const { chain } = useNetwork()
+
+  const [step, setStep] = useState<number>(1)
+
   return (
-    <Wrapper>
-      <Card>
-        <CardHeader>
-          <Text bold color={theme`colors.color2`}>
-            Glitch Bridge
-          </Text>
-        </CardHeader>
-        <CardContent>
-          <div className="flex items-center">
-            <SelectInput>
-              <Text fontSize="12px" mb="8px" color={theme`colors.color6`}>
-                From network
-              </Text>
-              <div className="flex items-center justify-between">
-                <Text fontSize="18px" color={theme`colors.color7`}>
-                  Select network
-                </Text>
-                <OutlineDownArrow />
-              </div>
-            </SelectInput>
-
-            <SwitchButton />
-
-            <SelectInput>
-              <Text fontSize="12px" mb="8px" color={theme`colors.color6`}>
-                To network
-              </Text>
-              <div className="flex items-center justify-between">
-                <Text fontSize="18px" color={theme`colors.color7`}>
-                  Select network
-                </Text>
-                <OutlineDownArrow />
-              </div>
-            </SelectInput>
-          </div>
-
-          <div className="mt-6 mb-2">
-            <BalanceView />
-          </div>
-
-          <AmountInput />
-
-          <PrimaryButton className="w-full mt-6">
-            <img src="./images/logo-metamask.png" alt="metamask-logo" />
-            <span>Connect with Metamask</span>
-          </PrimaryButton>
-        </CardContent>
-      </Card>
-    </Wrapper>
+    <>
+      {isConnected && checkUnsupportedChain(chain?.id) && <UnsupportedNetworkView />}
+      <Wrapper>
+        <Card>
+          <CardHeader>
+            <Text bold color={theme`colors.color2`}>
+              Glitch Bridge
+            </Text>
+          </CardHeader>
+          <CardContent>
+            {step === 1 && (
+              <StepOne
+                onNext={() => {
+                  // TODO
+                  setStep(2)
+                }}
+              />
+            )}
+            {step === 2 && (
+              <StepTwo
+                onBack={() => {
+                  setStep(1)
+                }}
+              />
+            )}
+          </CardContent>
+        </Card>
+      </Wrapper>
+    </>
   )
 }
 
