@@ -2,6 +2,7 @@ import React, { memo } from 'react'
 import { styled, theme } from 'twin.macro'
 
 import { Text } from 'components/Text'
+import { numberWithCommas } from 'utils/numbers'
 
 const Wrapper = styled.div`
   display: flex;
@@ -14,7 +15,11 @@ const Wrapper = styled.div`
   }
 `
 
-export const BalanceView: React.FC = memo(() => {
+interface Props {
+  balance: string
+}
+
+export const BalanceView: React.FC<Props> = memo((props) => {
   return (
     <Wrapper>
       <img src="./images/logo-metamask.png" alt="meta-logo" />
@@ -22,7 +27,7 @@ export const BalanceView: React.FC = memo(() => {
         <Text mr="8px" color={theme`colors.color7`}>
           Balance:
         </Text>
-        <Text>--</Text>
+        <Text>{props.balance ? `${numberWithCommas(props.balance)} GLCH` : '--'}</Text>
       </div>
     </Wrapper>
   )

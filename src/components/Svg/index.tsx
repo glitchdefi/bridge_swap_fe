@@ -9,6 +9,7 @@ export { default as ArrowLeftIcon } from './Icons/ArrowLeft'
 export { default as CheckIcon } from './Icons/Check'
 export { default as CheckCircleIcon } from './Icons/CheckCircle'
 export { default as WarningCircleIcon } from './Icons/WarningCircle'
+export { default as ErrorIcon } from './Icons/Error'
 
 export { default as Svg } from './Svg'
 export type { SvgProps } from './types'

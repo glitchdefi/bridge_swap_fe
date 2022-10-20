@@ -1,6 +1,6 @@
-import { SUPPORTED_NETWORK } from 'constants/index'
+import { supportedChainIds } from 'constants/supportedNetworks'
 
 export const checkUnsupportedChain = (chainId: number): boolean => {
-  const isUnSupported = SUPPORTED_NETWORK.findIndex((n) => n.chainIds.includes(chainId)) <= -1
+  const isUnSupported = !supportedChainIds.includes(chainId)
   return isUnSupported
 }

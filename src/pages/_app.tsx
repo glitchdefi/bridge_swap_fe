@@ -4,7 +4,7 @@ import dynamic from 'next/dynamic'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { ToastContainer } from 'react-toastify'
-import { configureChains, chain, createClient, WagmiConfig } from 'wagmi'
+import { configureChains, createClient, WagmiConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 
 // Styles
@@ -12,7 +12,7 @@ import { GlobalStyles } from 'styles/GlobalStyles'
 import { ThemeProvider } from 'styles/theme/themeContext'
 
 // Constants
-import { bscTestnet } from 'constants/supportedNetworks'
+import { chains } from 'constants/supportedNetworks'
 
 // Context
 import { LanguageProvider } from 'contexts/Localization'
@@ -53,7 +53,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   )
 }
 
-const { provider, webSocketProvider } = configureChains([chain.goerli, bscTestnet], [publicProvider()])
+const { provider, webSocketProvider } = configureChains(chains, [publicProvider()])
 
 const client = createClient({
   autoConnect: true,
@@ -85,7 +85,7 @@ const MyApp: React.FC<AppProps> = (props) => {
             <App {...props} />
           </ThemeProvider>
         </LanguageProvider>
-        <ToastContainer theme="dark" />
+        <ToastContainer theme="dark" icon={false} />
       </WagmiConfig>
     </>
   )

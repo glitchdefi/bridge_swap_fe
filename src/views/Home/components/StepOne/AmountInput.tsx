@@ -43,11 +43,12 @@ interface Props {
   isConnected: boolean
   isFromGlitchNetwork: boolean
   value: string
+  balance: string
   onChange: (amount: string, hasError: boolean) => void
 }
 
 export const AmountInput: React.FC<Props> = (props) => {
-  const { isConnected, isFromGlitchNetwork, value, onChange } = props
+  const { isConnected, balance, isFromGlitchNetwork, value, onChange } = props
   const [hasError, setHasError] = useState<{
     min: boolean
     max: boolean
@@ -90,8 +91,8 @@ export const AmountInput: React.FC<Props> = (props) => {
 
   const onMaxClick = useCallback(() => {
     setHasError({ min: false, max: false, decimals: false })
-    onChange('0', false)
-  }, [onChange])
+    onChange(balance, false)
+  }, [balance, onChange])
 
   return (
     <>
@@ -137,7 +138,7 @@ export const AmountInput: React.FC<Props> = (props) => {
       <WarningWrapper>
         <InfoOutline width={16} height={16} mr="10px" color={theme`colors.primary`} />
         <Text fontSize="12px" color={theme`colors.color7`}>
-          The minimum amount is 100 GLCH and the maximum is 4,000 GLCH.
+          The minimum amount is 100 GLCH and the maximum is 40,000 GLCH.
         </Text>
       </WarningWrapper>
       {isFromGlitchNetwork && (

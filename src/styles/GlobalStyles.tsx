@@ -57,6 +57,11 @@ export const GlobalStyles = createGlobalStyle`
   --toastify-color-progress-light: var(--color-primary);
   --toastify-color-progress-success: var(--toastify-color-progress-light);
   --toastify-color-success: var(--color-success);
+  --toastify-color-progress-dark: linear-gradient(
+    to right,
+    var(--color-primary),
+    var(--color-secondary)
+  );
 }
 
   html {
@@ -104,5 +109,34 @@ export const GlobalStyles = createGlobalStyle`
     line-height: 22px;
     text-decoration-line: underline;
     color: var(--color-primary);
+  }
+
+  .Toastify__toast-container {
+    padding: 0px;
+    max-width: calc(100% - 32px);
+    width: 100%;
+
+    @media (min-width: 640px) {
+      max-width: 400px;
+    }
+  }
+
+  .Toastify__toast-theme--dark {
+    background: var(--color-5);
+    border: 1px solid var(--color-success);
+    padding: 20px;
+    border-radius: 0px;
+
+    &.Toastify__toast--error {
+      border: 1px solid var(--color-fail);
+    }
+  }
+
+  .Toastify__toast-body {
+    padding: 0px;
+  }
+
+  .Toastify__progress-bar--error {
+    background: var(--toastify-color-progress-dark);
   }
 `

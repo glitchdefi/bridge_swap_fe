@@ -1,9 +1,9 @@
 import React, { memo, useState, useMemo } from 'react'
 import { styled, theme } from 'twin.macro'
-import { useNetwork, useSwitchNetwork } from 'wagmi'
+import { useNetwork } from 'wagmi'
 
-import { truncateAddress } from 'utils/strings'
 import { useAddress } from 'hooks/useAddress'
+import { useSwitchNetwork } from 'hooks/useSwitchNetwork'
 
 // Components
 import { Text } from 'components/Text'

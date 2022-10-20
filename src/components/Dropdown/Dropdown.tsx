@@ -88,7 +88,7 @@ export const Dropdown: React.FC<Props> = (props) => {
                     )}
                     <Text color={isSelected ? theme`colors.primary` : theme`colors.color8`}>{item.label}</Text>
                   </div>
-                  {isSelected && <CheckIcon width={16} height={16} />}
+                  {isSelected && <CheckIcon width={16} height={16} color={theme`colors.primary`} />}
                 </div>
               )
             })}

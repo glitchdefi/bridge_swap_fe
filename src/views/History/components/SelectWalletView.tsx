@@ -47,7 +47,7 @@ export const SelectWalletView: React.FC = () => {
               <img className="mr-3 w-5 h-5" src="./images/logo-metamask.png" alt="logo-metamask" />
               <Text color={theme`colors.primary`}>0xc059...03d9</Text>
             </div>
-            <CheckIcon width={16} height={16} />
+            <CheckIcon width={16} height={16} color={theme`colors.primary`} />
           </div>
           <div className="flex items-center p-4 cursor-pointer">
             <img className="mr-3 w-5 h-5" src="./images/logo.png" alt="logo-glch" />

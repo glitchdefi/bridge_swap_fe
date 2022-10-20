@@ -4,6 +4,7 @@ import { styled, theme } from 'twin.macro'
 import { useAccount, useNetwork } from 'wagmi'
 
 import { checkUnsupportedChain } from 'utils/checkUnsupportedChain'
+import { Transaction } from 'types'
 
 // Components
 import { Text } from 'components/Text'
@@ -32,7 +33,13 @@ const CardHeader = styled.div`
 `
 
 const CardContent = styled.div`
+  position: relative;
   padding: 32px;
+
+  .unsupported-overlay {
+    background-color: ${theme`colors.color5`};
+    opacity: 0.5;
+  }
 `
 
 const Home: React.FC = () => {
@@ -40,6 +47,14 @@ const Home: React.FC = () => {
   const { chain } = useNetwork()
 
   const [step, setStep] = useState<number>(1)
+  const [transaction, setTransaction] = useState<Transaction>({
+    fromNetwork: null,
+    toNetwork: null,
+    amount: {
+      value: '',
+      hasError: false,
+    },
+  })
 
   return (
     <>
@@ -54,18 +69,35 @@ const Home: React.FC = () => {
           <CardContent>
             {step === 1 && (
               <StepOne
-                onNext={() => {
-                  // TODO
+                initialTx={transaction}
+                onNext={(tx: Transaction) => {
+                  setTransaction(tx)
                   setStep(2)
                 }}
               />
             )}
             {step === 2 && (
               <StepTwo
+                initialTx={transaction}
+                onSuccess={() => {
+                  // Reset data
+                  setTransaction({
+                    fromNetwork: null,
+                    toNetwork: null,
+                    amount: {
+                      value: '',
+                      hasError: false,
+                    },
+                  })
+                  setStep(1)
+                }}
                 onBack={() => {
                   setStep(1)
                 }}
               />
+            )}
+            {isConnected && checkUnsupportedChain(chain?.id) && (
+              <div className="unsupported-overlay absolute top-0 left-0 right-0 bottom-0 cursor-not-allowed" />
             )}
           </CardContent>
         </Card>

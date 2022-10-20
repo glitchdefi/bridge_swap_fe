@@ -1,10 +1,12 @@
 import React, { useMemo, useState } from 'react'
 import { styled, theme } from 'twin.macro'
-import { useNetwork, useSwitchNetwork } from 'wagmi'
+import { useNetwork } from 'wagmi'
 
 import { useMetamask } from 'hooks/useMetamask'
 import { useCopy } from 'hooks/useCopy'
 import { useAddress } from 'hooks/useAddress'
+import { useSwitchNetwork } from 'hooks/useSwitchNetwork'
+
 import { NETWORK_DROPDOWN } from 'constants/index'
 
 // Components

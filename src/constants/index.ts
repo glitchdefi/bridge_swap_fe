@@ -6,14 +6,14 @@ export const CHAIN_IDS = {
     MAINNET: 56,
   },
   ETH: {
-    TESTNET: 3,
+    TESTNET: 5,
     MAINNET: 1,
   },
 }
 
 export const NETWORK_DROPDOWN = {
   eth: {
-    value: [1, 3],
+    value: [1, 5],
     label: 'Ethereum',
   },
   bsc: {
@@ -24,7 +24,7 @@ export const NETWORK_DROPDOWN = {
 
 export const SUPPORTED_NETWORK = [
   {
-    chainIds: [1, 3],
+    chainIds: [1, 5],
     label: 'Ethereum',
     icon: './images/logo-eth.png',
   },
@@ -42,3 +42,7 @@ export const SUPPORTED_NETWORK = [
 
 export const MIN_AMOUNT = 100
 export const MAX_AMOUNT = 40000
+export const GLITCH_ETH_TOKEN_ADDRESS = '0x9F720F007b9d9169c4481CeaA2fA82fdfec0b21F'
+export const ETH_BRIDGE_CONTRACT_ADDRESS = '0xEd51cCd8b9DDc59e71E692C142702e3ec5738bd4'
+export const GLITCH_BSC_TOKEN_ADDRESS = '0xC29c28Ef6eC433076C5e0BCbAFcC033537b48B0b'
+export const BSC_BRIDGE_CONTRACT_ADDRESS = '0x2700d71C5FCfd5109f6997Aaf6A6e1B47ED0E717'

@@ -13,6 +13,11 @@ const SelectInput = styled.div`
   user-select: none;
   cursor: pointer;
   flex: 1;
+  transition: all 0.3s ease;
+
+  &:hover {
+    border: 1px solid ${theme`colors.primary`};
+  }
 `
 
 interface Props {

@@ -1,4 +1,4 @@
-import { Chain } from 'wagmi'
+import { chain, Chain } from 'wagmi'
 
 export const bscTestnet: Chain = {
   id: 97,
@@ -10,7 +10,7 @@ export const bscTestnet: Chain = {
     symbol: 'BNB',
   },
   rpcUrls: {
-    default: 'https://data-seed-prebsc-1-s1.binance.org:8545',
+    default: 'https://data-seed-prebsc-2-s2.binance.org:8545',
   },
   blockExplorers: {
     default: { name: 'BscScan', url: 'https://testnet.bscscan.com' },
@@ -35,3 +35,16 @@ export const bscMainnet: Chain = {
   },
   testnet: false,
 }
+
+// export const chains = [chain.mainnet, chain.goerli, bscTestnet, bscMainnet]
+export const chains = [chain.goerli, bscTestnet]
+
+export const ethereumChainIds = [1, 5]
+export const bscChainIds = [56, 97]
+
+// 1 - ETH mainnet
+// 5 - ETH Goerli
+// 56 - BSC Mainnet
+// 97 - BSC Testnet
+// 99 - GLCH
+export const supportedChainIds = [...ethereumChainIds, ...bscChainIds, 99]
