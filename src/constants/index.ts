@@ -1,16 +1,5 @@
 // const IS_DEV = process.env.NODE_ENV !== 'production'
 
-export const CHAIN_IDS = {
-  BSC: {
-    TESTNET: 97,
-    MAINNET: 56,
-  },
-  ETH: {
-    TESTNET: 5,
-    MAINNET: 1,
-  },
-}
-
 export const NETWORK_DROPDOWN = {
   eth: {
     value: [1, 5],

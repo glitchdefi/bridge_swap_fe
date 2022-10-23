@@ -15,14 +15,20 @@ const Wrapper = styled.div`
   margin-top: 32px;
 `
 
-export const UnsupportedNetworkView: React.FC = memo(() => {
+interface Props {
+  onSwitchNetwork: () => void
+}
+
+export const UnsupportedNetworkView: React.FC<Props> = memo((props) => {
   return (
     <Wrapper>
       <div className="flex items-center flex-1">
         <WarningCircleIcon className="mr-3" width={16} height={16} />
         <Text color={theme`colors.color9`}>You are connected to unsupported network. Please switch your network</Text>
       </div>
-      <div className="text-link cursor-pointer">Switch network</div>
+      <div role="button" tabIndex={0} className="text-link cursor-pointer" onClick={props.onSwitchNetwork}>
+        Switch network
+      </div>
     </Wrapper>
   )
 })

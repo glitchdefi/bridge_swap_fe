@@ -7,13 +7,14 @@ import { ToastContainer } from 'react-toastify'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
 
 // Styles
 import { GlobalStyles } from 'styles/GlobalStyles'
 import { ThemeProvider } from 'styles/theme/themeContext'
 
 // Constants
-import { chains } from 'constants/supportedNetworks'
+import { bscTestnet, chains } from 'constants/supportedNetworks'
 
 // Context
 import { LanguageProvider } from 'contexts/Localization'
@@ -57,6 +58,12 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
 const { provider, webSocketProvider } = configureChains(chains, [
   alchemyProvider({ apiKey: 'lKsRNksBSsDRH7q_Vd6XQC8ttDXL3PIA' }),
   publicProvider({ stallTimeout: 1000 }),
+  jsonRpcProvider({
+    rpc: (chain) => {
+      if (chain.id !== bscTestnet.id) return null
+      return { http: chain.rpcUrls.default }
+    },
+  }),
 ])
 
 const client = createClient({

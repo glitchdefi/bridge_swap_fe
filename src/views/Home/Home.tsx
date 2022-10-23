@@ -1,5 +1,5 @@
 /* eslint-disable import/no-extraneous-dependencies */
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { styled, theme } from 'twin.macro'
 import { useAccount, useNetwork } from 'wagmi'
 
@@ -12,6 +12,7 @@ import { Text } from 'components/Text'
 import { UnsupportedNetworkView } from './components/UnsupportedNetworkView'
 import { StepOne } from './components/StepOne'
 import { StepTwo } from './components/StepTwo'
+import { SwitchNetworkModal } from './components/SwitchNetworkModal'
 
 const Wrapper = styled.div`
   margin-top: 32px;
@@ -56,6 +57,7 @@ const Home: React.FC = () => {
   const { isConnected } = useAccount()
   const { chain } = useNetwork()
 
+  const [openSwitchNetworkModal, setOpenSwitchNetworkModal] = useState<boolean>(false)
   const [step, setStep] = useState<number>(1)
   const [transaction, setTransaction] = useState<Transaction>({
     fromNetwork: null,
@@ -66,9 +68,15 @@ const Home: React.FC = () => {
     },
   })
 
+  const onToggleSwitchNetworkModal = useCallback(() => {
+    setOpenSwitchNetworkModal((prev) => !prev)
+  }, [])
+
   return (
     <>
-      {isConnected && checkUnsupportedChain(chain?.id) && <UnsupportedNetworkView />}
+      {isConnected && checkUnsupportedChain(chain?.id) && (
+        <UnsupportedNetworkView onSwitchNetwork={onToggleSwitchNetworkModal} />
+      )}
       <Wrapper>
         <Card>
           <CardHeader>
@@ -112,6 +120,8 @@ const Home: React.FC = () => {
           </CardContent>
         </Card>
       </Wrapper>
+
+      <SwitchNetworkModal isOpen={openSwitchNetworkModal} onClose={onToggleSwitchNetworkModal} />
     </>
   )
 }
