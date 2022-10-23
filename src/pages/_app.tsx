@@ -1,16 +1,33 @@
 import { Fragment } from 'react'
 import type { AppProps } from 'next/app'
+import dynamic from 'next/dynamic'
 import { NextPage } from 'next'
 import Head from 'next/head'
 import { ToastContainer } from 'react-toastify'
+import { configureChains, createClient, WagmiConfig } from 'wagmi'
+import { publicProvider } from 'wagmi/providers/public'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { jsonRpcProvider } from 'wagmi/providers/jsonRpc'
+
+// Styles
+import { GlobalStyles } from 'styles/GlobalStyles'
+import { ThemeProvider } from 'styles/theme/themeContext'
+
+// Constants
+import { bscTestnet, chains } from 'constants/supportedNetworks'
+
+// Context
+import { LanguageProvider } from 'contexts/Localization'
+
+// Components
+// import { Header } from 'components/Header'
+import { Container } from 'components/Layout'
+import { Footer } from 'components/Footer'
 
 import 'styles/css/tailwindcss.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-import { GlobalStyles } from 'styles/GlobalStyles'
-import { LanguageProvider } from 'contexts/Localization'
-import { Header } from 'components/Header'
-import { ThemeProvider } from 'styles/theme/themeContext'
+const Header = dynamic(() => import('components/Header/Header'), { ssr: false })
 
 // const ProductionErrorBoundary = process.env.NODE_ENV === 'production' ? ErrorBoundary : Fragment
 
@@ -27,13 +44,33 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   const Layout = Component.Layout || Fragment
   return (
     <>
-      <Header />
       <Layout>
-        <Component {...pageProps} />
+        <Container>
+          <Header />
+          <Component {...pageProps} />
+          <Footer />
+        </Container>
       </Layout>
     </>
   )
 }
+
+const { provider, webSocketProvider } = configureChains(chains, [
+  alchemyProvider({ apiKey: 'lKsRNksBSsDRH7q_Vd6XQC8ttDXL3PIA' }),
+  publicProvider({ stallTimeout: 1000 }),
+  jsonRpcProvider({
+    rpc: (chain) => {
+      if (chain.id !== bscTestnet.id) return null
+      return { http: chain.rpcUrls.default }
+    },
+  }),
+])
+
+const client = createClient({
+  autoConnect: true,
+  provider,
+  webSocketProvider,
+})
 
 const MyApp: React.FC<AppProps> = (props) => {
   return (
@@ -52,13 +89,15 @@ const MyApp: React.FC<AppProps> = (props) => {
         <title>Glitch Bridge</title>
       </Head>
 
-      <LanguageProvider>
-        <GlobalStyles />
-        <ThemeProvider>
-          <App {...props} />
-        </ThemeProvider>
-      </LanguageProvider>
-      <ToastContainer theme="dark" />
+      <WagmiConfig client={client}>
+        <LanguageProvider>
+          <GlobalStyles />
+          <ThemeProvider>
+            <App {...props} />
+          </ThemeProvider>
+        </LanguageProvider>
+        <ToastContainer theme="dark" icon={false} />
+      </WagmiConfig>
     </>
   )
 }
