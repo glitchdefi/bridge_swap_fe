@@ -119,7 +119,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
 
   return (
     <div>
-      <div className="flex items-center">
+      <div className="flex flex-col items-center justify-center sm:flex-row ">
         <SelectNetwork
           isFrom
           value={transaction.fromNetwork}

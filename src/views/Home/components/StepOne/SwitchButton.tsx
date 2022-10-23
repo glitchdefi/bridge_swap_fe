@@ -11,8 +11,6 @@ const Wrap = styled.div`
   justify-content: center;
   border: 1px solid ${theme`colors.color4`};
   cursor: pointer;
-  margin-left: 24px;
-  margin-right: 24px;
 `
 
 interface Props {
@@ -21,7 +19,7 @@ interface Props {
 
 export const SwitchButton: React.FC<Props> = ({ onClick }) => {
   return (
-    <Wrap onClick={onClick}>
+    <Wrap className="my-4 sm:my-0 sm:mx-6" onClick={onClick}>
       <HorizontalSwap width={37} height={37} color={theme`colors.primary`} />
     </Wrap>
   )

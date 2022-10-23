@@ -13,6 +13,7 @@ const SelectInput = styled.div`
   user-select: none;
   cursor: pointer;
   flex: 1;
+  width: 100%;
   transition: all 0.3s ease;
 
   &:hover {
@@ -38,7 +39,7 @@ export const SelectNetwork: React.FC<Props> = memo((props) => {
 
   return (
     <Dropdown
-      className="flex-1"
+      className="flex-1 w-full"
       isOpen={openNetworkDropdown}
       value={props.value}
       button={

@@ -34,6 +34,9 @@ export const StepTwo: React.FC<Props> = (props) => {
 
   const [showWaiting, setShowWaiting] = useState<boolean>(false)
 
+  const fromNetwork = SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.fromNetwork))
+  const toNetwork = SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.toNetwork))
+
   useEffect(() => {
     if (data && isSuccess) {
       setShowWaiting(false)
@@ -88,35 +91,35 @@ export const StepTwo: React.FC<Props> = (props) => {
         </Text>
       </div>
 
-      <div className="flex items-center mb-6">
+      <div className="flex flex-col sm:flex-row items-center mb-6">
         {/* From */}
-        <div className="flex-1 p-4 border border-color1 bg-color3 cursor-not-allowed">
+        <div className="flex-1 w-full p-4 border border-color1 bg-color3 cursor-not-allowed">
           <Text fontSize="12px" mb="8px" color={theme`colors.color6`}>
             From network
           </Text>
 
           <div className="flex items-center">
-            <img className="w-6 h-6 mr-3" src="./images/logo-eth.png" alt="network-icon" />
+            <img className="w-6 h-6 mr-3" src={fromNetwork?.icon} alt="network-icon" />
             <Text fontSize="18px" color={theme`colors.color7`}>
-              {SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.fromNetwork))?.label}
+              {fromNetwork?.label}
             </Text>
           </div>
         </div>
 
-        <div className="p-3 mx-6 border border-color1 bg-color3 cursor-not-allowed">
+        <div className="p-3 my-4 sm:my-0 sm:mx-6 border border-color1 bg-color3 cursor-not-allowed">
           <HorizontalSwap width={37} height={37} color={theme`colors.color7`} />
         </div>
 
         {/* To */}
-        <div className="flex-1 p-4 border border-color1 bg-color3 cursor-not-allowed">
+        <div className="flex-1 w-full p-4 border border-color1 bg-color3 cursor-not-allowed">
           <Text fontSize="12px" mb="8px" color={theme`colors.color6`}>
             To network
           </Text>
 
           <div className="flex items-center">
-            <img className="w-6 h-6 mr-3" src="./images/logo-bnb.png" alt="network-icon" />
+            <img className="w-6 h-6 mr-3" src={toNetwork?.icon} alt="network-icon" />
             <Text fontSize="18px" color={theme`colors.color7`}>
-              {SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.fromNetwork))?.label}
+              {toNetwork?.label}
             </Text>
           </div>
         </div>

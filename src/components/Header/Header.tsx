@@ -6,6 +6,7 @@ import { useAccount } from 'wagmi'
 import { useMetamask } from 'hooks/useMetamask'
 
 // Components
+import { HamburgerIcon } from 'components/Svg'
 import { OutlineButton } from 'components/Button'
 import { ThemeToggle } from './components/ThemeToggle'
 import { HistoryBox } from './components/HistoryBox'
@@ -55,7 +56,7 @@ const Header: React.FC = () => {
 
       <div className="flex items-center">
         {isConnected ? (
-          <div className="flex items-center">
+          <div className="hidden lg:flex lg:items-center">
             {/* <div className="mr-4">
               <AccountInfo isGlitchNetwork onClick={toggleOpenGlitchInfoModal} />
             </div> */}
@@ -65,12 +66,17 @@ const Header: React.FC = () => {
             <HistoryBox />
           </div>
         ) : (
-          <OutlineButton onClick={() => onConnect()}>
-            <img src="./images/logo-metamask.png" alt="metamask-logo" />
-            <span>Connect with Metamask</span>
-          </OutlineButton>
+          <div className="hidden lg:block">
+            <OutlineButton onClick={() => onConnect()}>
+              <img src="./images/logo-metamask.png" alt="metamask-logo" />
+              <span>Connect with Metamask</span>
+            </OutlineButton>
+          </div>
         )}
 
+        <div className="cursor-pointer lg:hidden">
+          <HamburgerIcon width={24} color="white" />
+        </div>
         <span className="mx-4 text-color1"> | </span>
         <ThemeToggle />
       </div>

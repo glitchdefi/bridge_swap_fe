@@ -6,6 +6,7 @@ import Head from 'next/head'
 import { ToastContainer } from 'react-toastify'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
 
 // Styles
 import { GlobalStyles } from 'styles/GlobalStyles'
@@ -53,7 +54,10 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   )
 }
 
-const { provider, webSocketProvider } = configureChains(chains, [publicProvider()])
+const { provider, webSocketProvider } = configureChains(chains, [
+  alchemyProvider({ apiKey: 'lKsRNksBSsDRH7q_Vd6XQC8ttDXL3PIA' }),
+  publicProvider({ stallTimeout: 1000 }),
+])
 
 const client = createClient({
   autoConnect: true,

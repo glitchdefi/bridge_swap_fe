@@ -1,8 +1,8 @@
 import React from 'react'
 import { theme, styled } from 'twin.macro'
-import Link from 'next/link'
 
 import { Text } from 'components/Text'
+import { media } from 'styles/media'
 
 const Wrapper = styled.div`
   display: flex;
@@ -10,19 +10,22 @@ const Wrapper = styled.div`
   align-items: center;
   justify-content: space-between;
   border-top: 1px solid ${theme`colors.magenta2`};
-
   padding-top: 8px;
   padding-bottom: 24px;
-  position: absolute;
-  bottom: 0px;
-  right: 0px;
-  left: 0px;
+  margin-top: 48px;
 
   .footer-logo {
     max-width: 125px;
     height: 60px;
     margin-bottom: 16px;
   }
+
+  ${media.md`
+    position: absolute;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+  `}
 `
 
 const Footer: React.FC = () => {

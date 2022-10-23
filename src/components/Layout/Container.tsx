@@ -1,5 +1,6 @@
 /* eslint-disable import/no-extraneous-dependencies */
 import { useTheme } from 'hooks/useTheme'
+import { media } from 'styles/media'
 import { styled, css, theme } from 'twin.macro'
 import { Box, BoxProps } from '../Box'
 
@@ -28,8 +29,18 @@ const StyledWrapper = styled.div`
   min-height: 100vh;
   height: 100%;
 
-  padding-left: 120px;
-  padding-right: 120px;
+  padding-left: 16px;
+  padding-right: 16px;
+
+  ${media.md`
+    padding-left: 60px;
+    padding-right: 60px;
+  `}
+
+  ${media.lg`
+    padding-left: 120px;
+    padding-right: 120px;
+  `}
 `
 
 const Container: React.FC<BoxProps> = ({ children, ...props }) => {

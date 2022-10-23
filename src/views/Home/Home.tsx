@@ -4,6 +4,7 @@ import { styled, theme } from 'twin.macro'
 import { useAccount, useNetwork } from 'wagmi'
 
 import { checkUnsupportedChain } from 'utils/checkUnsupportedChain'
+import { media } from 'styles/media'
 import { Transaction } from 'types'
 
 // Components
@@ -23,23 +24,32 @@ const Card = styled.div`
 `
 
 const CardHeader = styled.div`
-  padding-left: 32px;
-  padding-right: 32px;
+  padding-left: 16px;
+  padding-right: 16px;
   padding-top: 12px;
   padding-bottom: 12px;
-
   background-color: ${theme`colors.color3`};
   box-shadow: inset 0px -1px 0px ${theme`colors.color4`};
+
+  ${media.md`
+    padding-left: 32px;
+    padding-right: 32px;
+  `}
 `
 
 const CardContent = styled.div`
   position: relative;
-  padding: 32px;
+  padding: 16px;
 
   .unsupported-overlay {
     background-color: ${theme`colors.color5`};
     opacity: 0.5;
   }
+
+  ${media.md`
+    padding-left: 32px;
+    padding-right: 32px;
+  `}
 `
 
 const Home: React.FC = () => {

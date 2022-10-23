@@ -105,10 +105,10 @@ export const AmountInput: React.FC<Props> = (props) => {
           leftComponent={<img src="./images/logo.png" alt="glitch-logo" />}
           rightComponent={
             <div className="flex items-center">
-              <Text fontSize="16px" color={theme`colors.color1`}>
+              <Text className="hidden sm:block" fontSize="16px" color={theme`colors.color1`}>
                 GLCH
               </Text>
-              <div className="divide" />
+              <div className="hidden sm:block divide" />
               <OutlineButton disabled={!isConnected} className="!py-0 !px-2" onClick={onMaxClick}>
                 <Text fontSize="12px" color={theme`colors.primary`}>
                   Max
