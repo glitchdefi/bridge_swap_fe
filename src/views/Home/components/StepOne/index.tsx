@@ -78,8 +78,10 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   }, [transaction])
 
   const onContinue = useCallback(() => {
-    onNext(transaction)
-  }, [transaction, onNext])
+    if (!isContinueDisabled) {
+      onNext(transaction)
+    }
+  }, [isContinueDisabled, transaction, onNext])
 
   const renderButton = useCallback(() => {
     if (isConnected && checkUnsupportedChain(chain?.id)) {
