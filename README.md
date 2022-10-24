@@ -17,8 +17,13 @@ yarn dev
 
 build with production mode
 ```sh
+yarn install
+
+```sh
 yarn build
 
 # start the application after build
 yarn start
 ```
+
+https://nextjs.org/docs/deployment
