@@ -15,14 +15,14 @@ start the development server
 yarn dev
 ```
 
-build with production mode
-```sh
-yarn install
+## Build with production mode
 
 ```sh
-yarn build
+1. yarn install
 
-# start the application after build
+2. yarn build
+
+# 3. start the application after build
 yarn start
 ```
 
