@@ -4,6 +4,9 @@ import { useNetwork } from 'wagmi'
 
 import { useAddress } from 'hooks/useAddress'
 import { useSwitchNetwork } from 'hooks/useSwitchNetwork'
+import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
+
+import { truncateAddress } from 'utils/strings'
 
 // Components
 import { Text } from 'components/Text'
@@ -42,6 +45,7 @@ const AccountInfoWrapper = styled.div`
 
 interface Props {
   isGlitchNetwork?: boolean
+  glitchAccounts: string[]
   onClick: () => void
 }
 
@@ -50,10 +54,11 @@ const DROPDOWN_DATA = [
   { ...NETWORK_DROPDOWN.bsc, icon: './images/logo-bnb.png', iconCls: 'w-5 h-5' },
 ]
 
-export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, onClick }) => {
+export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, glitchAccounts, onClick }) => {
   const { shortAddress } = useAddress()
   const { chain } = useNetwork()
   const { switchNetwork } = useSwitchNetwork()
+  const { accountSelected: glitchAccountSelected, setAccountSelected } = usePolkadotApi()
 
   const [openNetworkDropdown, setOpenNetworkDropdown] = useState<boolean>(false)
 
@@ -61,6 +66,16 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, onClick }) 
     const network = DROPDOWN_DATA.find((n) => n.value.includes(chain.id))
     return network ?? { label: 'Unsupported network' }
   }, [chain.id])
+
+  const glitchAccountsDropdownList = useMemo(() => {
+    if (!glitchAccounts) return []
+    return glitchAccounts.map((o) => {
+      return {
+        value: o,
+        label: truncateAddress(o),
+      }
+    })
+  }, [glitchAccounts])
 
   return (
     <Dropdown
@@ -71,7 +86,9 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, onClick }) 
               <img src={isGlitchNetwork ? './images/logo.png' : './images/logo-metamask.png'} alt="wallet-logo" />
               <div className="account-status" />
             </div>
-            <Text color={theme`colors.primary`}>{shortAddress}</Text>
+            <Text color={theme`colors.primary`}>
+              {isGlitchNetwork ? truncateAddress(glitchAccountSelected) : shortAddress}
+            </Text>
             <span className="mx-2 text-color1"> | </span>
           </div>
           <div
@@ -79,23 +96,26 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, onClick }) 
             tabIndex={0}
             className="flex items-center select-none"
             onClick={() => {
-              if (!isGlitchNetwork) {
-                setOpenNetworkDropdown((prev) => !prev)
-              }
+              if (isGlitchNetwork && !glitchAccounts) return
+              setOpenNetworkDropdown((prev) => !prev)
             }}
           >
             <Text color={theme`colors.color8`} className="mr-2">
-              {isGlitchNetwork ? 'Glitch' : networkSelected?.label}
+              {isGlitchNetwork ? 'Glitch Testnet' : networkSelected?.label}
             </Text>
-            {!isGlitchNetwork && <OutlineDownArrow width={12} height={12} />}
+            <OutlineDownArrow width={12} height={12} />
           </div>
         </AccountInfoWrapper>
       }
-      stickyTitle="Switch network"
-      value={chain.id}
-      items={DROPDOWN_DATA}
+      stickyTitle={isGlitchNetwork ? 'Switch account' : 'Switch network'}
+      value={isGlitchNetwork ? glitchAccountSelected : chain.id}
+      items={isGlitchNetwork ? glitchAccountsDropdownList : DROPDOWN_DATA}
       onChange={(value) => {
-        switchNetwork(value[1])
+        if (isGlitchNetwork) {
+          setAccountSelected(value)
+        } else {
+          switchNetwork(value[1])
+        }
       }}
       isOpen={openNetworkDropdown}
       onClose={() => setOpenNetworkDropdown(false)}

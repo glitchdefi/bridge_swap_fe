@@ -4,6 +4,7 @@ import { useRouter } from 'next/router'
 import { useAccount } from 'wagmi'
 
 import { useMetamask } from 'hooks/useMetamask'
+import { useAccounts as useGlitchAccounts } from 'hooks/substrate/useAccounts'
 
 // Components
 import { HamburgerIcon } from 'components/Svg'
@@ -31,6 +32,7 @@ const Wrapper = styled.div`
 const Header: React.FC = () => {
   const router = useRouter()
   const { isConnected } = useAccount()
+  const { hasAccounts, allAccounts, areAccountsLoaded } = useGlitchAccounts()
   const { onConnect } = useMetamask()
 
   const [isOpenMetamaskInfoModal, setIsOpenMetamaskInfoModal] = useState<boolean>(false)
@@ -57,11 +59,15 @@ const Header: React.FC = () => {
       <div className="flex items-center">
         {isConnected ? (
           <div className="hidden lg:flex lg:items-center">
-            {/* <div className="mr-4">
-              <AccountInfo isGlitchNetwork onClick={toggleOpenGlitchInfoModal} />
-            </div> */}
+            {!areAccountsLoaded ? (
+              <div className="mr-4 text-primary">Loading Glitch accounts ...</div>
+            ) : hasAccounts ? (
+              <div className="mr-4">
+                <AccountInfo isGlitchNetwork glitchAccounts={allAccounts} onClick={toggleOpenGlitchInfoModal} />
+              </div>
+            ) : null}
             <div className="mr-4">
-              <AccountInfo onClick={toggleOpenMetamaskInfoModal} />
+              <AccountInfo glitchAccounts={[]} onClick={toggleOpenMetamaskInfoModal} />
             </div>
             <HistoryBox />
           </div>

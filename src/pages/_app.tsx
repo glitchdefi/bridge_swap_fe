@@ -1,7 +1,5 @@
-import { Fragment } from 'react'
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
-import { NextPage } from 'next'
 import Head from 'next/head'
 import { ToastContainer } from 'react-toastify'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
@@ -19,41 +17,13 @@ import { bscTestnet, chains } from 'constants/supportedNetworks'
 // Context
 import { LanguageProvider } from 'contexts/Localization'
 
-// Components
-// import { Header } from 'components/Header'
-import { Container } from 'components/Layout'
-import { Footer } from 'components/Footer'
-
 import 'styles/css/tailwindcss.css'
 import 'react-toastify/dist/ReactToastify.css'
 
-const Header = dynamic(() => import('components/Header/Header'), { ssr: false })
+const PolkadotApiProvider = dynamic(() => import('contexts/PolkadotApi/Provider'), { ssr: false })
+const App = dynamic(() => import('views/App'), { ssr: false })
 
 // const ProductionErrorBoundary = process.env.NODE_ENV === 'production' ? ErrorBoundary : Fragment
-
-type NextPageWithLayout = NextPage & {
-  Layout?: React.FC
-}
-
-type AppPropsWithLayout = AppProps & {
-  Component: NextPageWithLayout
-}
-
-const App = ({ Component, pageProps }: AppPropsWithLayout) => {
-  // Use the layout defined at the page level, if available
-  const Layout = Component.Layout || Fragment
-  return (
-    <>
-      <Layout>
-        <Container>
-          <Header />
-          <Component {...pageProps} />
-          <Footer />
-        </Container>
-      </Layout>
-    </>
-  )
-}
 
 const { provider, webSocketProvider } = configureChains(chains, [
   alchemyProvider({ apiKey: 'lKsRNksBSsDRH7q_Vd6XQC8ttDXL3PIA' }),
@@ -90,13 +60,15 @@ const MyApp: React.FC<AppProps> = (props) => {
       </Head>
 
       <WagmiConfig client={client}>
-        <LanguageProvider>
-          <GlobalStyles />
-          <ThemeProvider>
-            <App {...props} />
-          </ThemeProvider>
-        </LanguageProvider>
-        <ToastContainer theme="dark" icon={false} />
+        <PolkadotApiProvider>
+          <LanguageProvider>
+            <GlobalStyles />
+            <ThemeProvider>
+              <App {...props} />
+            </ThemeProvider>
+          </LanguageProvider>
+          <ToastContainer theme="dark" icon={false} />
+        </PolkadotApiProvider>
       </WagmiConfig>
     </>
   )

@@ -5,15 +5,20 @@ import { erc20ABI, useContractRead, usePrepareContractWrite, useContractWrite, u
 import { toHex, toWei, fromWei } from 'web3-utils'
 
 import ethSwapToBscABI from 'assets/jsons/eth_swap_bsc_abi.json'
+import ethSwapToGlitchABI from 'assets/jsons/eth_swap_glitch_abi.json'
 import bscSwapToEthABI from 'assets/jsons/bsc_swap_eth_abi.json'
 import {
   BSC_BRIDGE_CONTRACT_ADDRESS,
   ETH_BRIDGE_CONTRACT_ADDRESS,
+  GLITCH_BRIDGE_CONTRACT_ADDRESS,
   GLITCH_BSC_TOKEN_ADDRESS,
   GLITCH_ETH_TOKEN_ADDRESS,
+  GLITCH_NATIVE_TOKEN_ADDRESS,
 } from 'constants/index'
+import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
 import { Transaction, TransactionReceipt } from 'types'
 import { isEthereumChain } from 'utils/isEthereumChain'
+import { isGlitchChain } from 'utils/isGlitchChain'
 
 import { useAddress } from './useAddress'
 
@@ -28,12 +33,36 @@ export const useTransfer = (
   isSuccess: boolean
 } => {
   const { address } = useAddress()
-  const { amount, fromNetwork } = tx
+  const { accountSelected: glitchAccountSelected } = usePolkadotApi()
+  const { amount, fromNetwork, toNetwork } = tx
 
-  const tokenContractAddress = isEthereumChain(fromNetwork) ? GLITCH_ETH_TOKEN_ADDRESS : GLITCH_BSC_TOKEN_ADDRESS
-  const bridgeContractAddress = isEthereumChain(fromNetwork) ? ETH_BRIDGE_CONTRACT_ADDRESS : BSC_BRIDGE_CONTRACT_ADDRESS
-  const transferContractInterface = isEthereumChain(fromNetwork) ? ethSwapToBscABI : bscSwapToEthABI
-  const transferFunctionName = isEthereumChain(fromNetwork) ? 'swapETH2BSC' : 'swapBSC2ETH'
+  const tokenContractAddress =
+    isEthereumChain(fromNetwork) && !isGlitchChain(toNetwork)
+      ? GLITCH_ETH_TOKEN_ADDRESS
+      : isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
+      ? GLITCH_NATIVE_TOKEN_ADDRESS
+      : GLITCH_BSC_TOKEN_ADDRESS
+
+  const bridgeContractAddress =
+    isEthereumChain(fromNetwork) && !isGlitchChain(toNetwork)
+      ? ETH_BRIDGE_CONTRACT_ADDRESS
+      : isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
+      ? GLITCH_BRIDGE_CONTRACT_ADDRESS
+      : BSC_BRIDGE_CONTRACT_ADDRESS
+
+  const transferContractInterface =
+    isEthereumChain(fromNetwork) && !isGlitchChain(toNetwork)
+      ? ethSwapToBscABI
+      : isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
+      ? ethSwapToGlitchABI
+      : bscSwapToEthABI
+
+  const transferFunctionName =
+    isEthereumChain(fromNetwork) && !isGlitchChain(toNetwork)
+      ? 'swapETH2BSC'
+      : isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
+      ? 'transferToGlitch'
+      : 'swapBSC2ETH'
 
   // Check the approved status or not
   const { refetch: allowanceRefetch } = useContractRead({
@@ -59,11 +88,17 @@ export const useTransfer = (
     addressOrName: bridgeContractAddress,
     contractInterface: transferContractInterface,
     functionName: transferFunctionName,
-    args: [toHex(toWei(amount.value))],
-    overrides: {
-      from: address,
-      value: fee,
-    },
+    args:
+      isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
+        ? [glitchAccountSelected, toHex(toWei(amount.value))]
+        : [toHex(toWei(amount.value))],
+    overrides:
+      isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
+        ? {}
+        : {
+            from: address,
+            value: fee,
+          },
   })
 
   const { writeAsync: approveWriteAsync, error: approveError } = useContractWrite(approveConfig)
@@ -89,9 +124,12 @@ export const useTransfer = (
       setProcess('transfer')
       const txData = await transferWriteAsync?.()
 
-      setProcess('confirmation')
-      setTxHash(txData.hash)
+      if (txData) {
+        setProcess('confirmation')
+        setTxHash(txData?.hash)
+      }
     } catch (error: unknown) {
+      console.log('Transfer Error', error)
       // error
     }
   }, [allowanceRefetch, transferWriteAsync, approveWriteAsync])

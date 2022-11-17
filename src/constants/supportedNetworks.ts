@@ -41,10 +41,11 @@ export const chains = [chain.goerli, bscTestnet]
 
 export const ethereumChainIds = [1, 5]
 export const bscChainIds = [56, 97]
+export const glitchChainId = 42
 
 // 1 - ETH mainnet
 // 5 - ETH Goerli
 // 56 - BSC Mainnet
 // 97 - BSC Testnet
-// 99 - GLCH
-export const supportedChainIds = [...ethereumChainIds, ...bscChainIds, 99]
+// 42 - GLCH
+export const supportedChainIds = [...ethereumChainIds, ...bscChainIds, glitchChainId]

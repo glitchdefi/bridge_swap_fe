@@ -1,6 +1,8 @@
 import React from 'react'
 import { styled, theme } from 'twin.macro'
 
+import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
+
 // Components
 import { Input } from 'components/Input'
 import { Modal } from 'components/Modal'
@@ -26,6 +28,8 @@ interface Props {
 }
 
 export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
+  const { accountSelected } = usePolkadotApi()
+
   return (
     <Modal isOpen={isOpen}>
       <Modal.Header title="Your wallet" onClose={onClose} />
@@ -39,18 +43,18 @@ export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 <Text className="mr-1">Currently on network:</Text>
                 <div className="flex items-center">
                   <img className="w-5 h-5 mr-1" src="./images/logo.png" alt="logo-glitch" />
-                  <Text>Glitch mainnet</Text>
+                  <Text>Glitch Testnet</Text>
                 </div>
               </div>
             </div>
           </div>
 
           <div className="p-4 bg-color4">
-            <Text className="!text-color8 !font-semibold mb-2">charlie puth</Text>
+            {/* <Text className="!text-color8 !font-semibold mb-2">charlie puth</Text> */}
             <InputWrapper>
               <Input
                 disabled
-                value="0xd4D55eB6f63cbbE697508C220b3F3e371E6634aD"
+                value={accountSelected}
                 rightComponent={
                   <div className="cursor-pointer">
                     <CopyIcon />

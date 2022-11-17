@@ -10,6 +10,7 @@ import { subtract } from 'utils/numbers'
 import { checkUnsupportedChain } from 'utils/checkUnsupportedChain'
 
 import { SUPPORTED_NETWORK } from 'constants/index'
+import { glitchChainId } from 'constants/supportedNetworks'
 import { Transaction } from 'types'
 
 // Components
@@ -92,7 +93,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
       )
     }
 
-    if (isConnected && transaction.fromNetwork !== 99) {
+    if (isConnected && transaction.fromNetwork !== glitchChainId) {
       return (
         <PrimaryButton className={`w-full mt-6 ${isContinueDisabled ? 'disabled' : ''}`} onClick={onContinue}>
           <span>Continue</span>
@@ -100,7 +101,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
       )
     }
 
-    if (transaction.fromNetwork === 99) {
+    if (transaction.fromNetwork === glitchChainId) {
       return (
         <PrimaryButton className="w-full mt-6" onClick={onConnect}>
           <img src="./images/logo.png" alt="glitch-logo" />
@@ -146,7 +147,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
 
       {/* Amount */}
       <AmountInput
-        isFromGlitchNetwork={transaction.fromNetwork === 99}
+        isFromGlitchNetwork={transaction.fromNetwork === glitchChainId}
         isConnected={isConnected}
         value={transaction.amount.value}
         balance={formattedBalance}
