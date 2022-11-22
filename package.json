@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "build-prod": "npm run build && next start -p 3001",
     "check-types": "tsc --noemit",
     "eslint": "eslint src/**/*.{ts,tsx}",
     "lint": "npm run eslint",
