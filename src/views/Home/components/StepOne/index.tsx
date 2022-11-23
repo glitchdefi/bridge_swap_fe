@@ -21,7 +21,7 @@ import { SelectNetwork } from './SelectNetwork'
 import { SwitchButton } from './SwitchButton'
 import { EstimatedFeeView } from '../EstimatedFeeView'
 
-const DROPDOWN_DATA = [
+export const DROPDOWN_DATA = [
   { ...SUPPORTED_NETWORK[0], value: SUPPORTED_NETWORK[0].chainIds, iconCls: 'w-7 h-7' },
   { ...SUPPORTED_NETWORK[1], value: SUPPORTED_NETWORK[1].chainIds, iconCls: 'w-7 h-7' },
   { ...SUPPORTED_NETWORK[2], value: SUPPORTED_NETWORK[2].chainIds, iconCls: 'w-7 h-7' },
@@ -41,8 +41,8 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   const { fee, formattedFee } = useFetchEstimatedFee(chain?.id)
 
   const [transaction, setTransaction] = useState<Transaction>({
-    fromNetwork: null, // ChainId
-    toNetwork: null, // ChainId
+    fromNetwork: DROPDOWN_DATA[0].value[1], // ChainId
+    toNetwork: DROPDOWN_DATA[2].value[1], // ChainId
     amount: {
       value: '',
       hasError: false,
@@ -71,11 +71,11 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   }, [])
 
   const switchNetwork = useCallback(() => {
-    setTransaction({
-      ...transaction,
-      fromNetwork: transaction.toNetwork,
-      toNetwork: transaction.fromNetwork,
-    })
+    // setTransaction({
+    //   ...transaction,
+    //   fromNetwork: transaction.toNetwork,
+    //   toNetwork: transaction.fromNetwork,
+    // })
   }, [transaction])
 
   const onContinue = useCallback(() => {

@@ -96,8 +96,9 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, glitchAccou
             tabIndex={0}
             className="flex items-center select-none"
             onClick={() => {
-              if (isGlitchNetwork && !glitchAccounts) return
-              setOpenNetworkDropdown((prev) => !prev)
+              if (isGlitchNetwork && glitchAccounts) {
+                setOpenNetworkDropdown((prev) => !prev)
+              }
             }}
           >
             <Text color={theme`colors.color8`} className="mr-2">

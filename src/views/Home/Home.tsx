@@ -10,7 +10,7 @@ import { Transaction } from 'types'
 // Components
 import { Text } from 'components/Text'
 import { UnsupportedNetworkView } from './components/UnsupportedNetworkView'
-import { StepOne } from './components/StepOne'
+import { DROPDOWN_DATA, StepOne } from './components/StepOne'
 import { StepTwo } from './components/StepTwo'
 import { SwitchNetworkModal } from './components/SwitchNetworkModal'
 
@@ -60,8 +60,8 @@ const Home: React.FC = () => {
   const [openSwitchNetworkModal, setOpenSwitchNetworkModal] = useState<boolean>(false)
   const [step, setStep] = useState<number>(1)
   const [transaction, setTransaction] = useState<Transaction>({
-    fromNetwork: null,
-    toNetwork: null,
+    fromNetwork: DROPDOWN_DATA[0].value[1],
+    toNetwork: DROPDOWN_DATA[2].value[1],
     amount: {
       value: '',
       hasError: false,

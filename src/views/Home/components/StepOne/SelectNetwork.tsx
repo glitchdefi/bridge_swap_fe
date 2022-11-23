@@ -43,7 +43,8 @@ export const SelectNetwork: React.FC<Props> = memo((props) => {
       isOpen={openNetworkDropdown}
       value={props.value}
       button={
-        <SelectInput onClick={() => setOpenNetworkDropdown((prev) => !prev)}>
+        // <SelectInput onClick={() => setOpenNetworkDropdown((prev) => !prev)}>
+        <SelectInput>
           <Text fontSize="12px" mb="8px" color={theme`colors.color6`}>
             {props.isFrom ? 'From' : 'To'} network
           </Text>

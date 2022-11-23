@@ -71,7 +71,7 @@ export const MetamaskInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
                         role="button"
                         tabIndex={0}
                         className="flex items-center cursor-pointer select-none"
-                        onClick={() => setOpenNetworkDropdown((prev) => !prev)}
+                        // onClick={() => setOpenNetworkDropdown((prev) => !prev)}
                       >
                         <img className="w-5 h-5" src={networkSelected?.icon} alt="icon" />
                         <Text className="mx-2">{networkSelected?.label}</Text>

@@ -1,10 +1,13 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { styled } from 'twin.macro'
 import { useRouter } from 'next/router'
-import { useAccount } from 'wagmi'
+import { useAccount, useNetwork } from 'wagmi'
 
 import { useMetamask } from 'hooks/useMetamask'
 import { useAccounts as useGlitchAccounts } from 'hooks/substrate/useAccounts'
+import { useSwitchNetwork } from 'hooks/useSwitchNetwork'
+import { isEthereumChain } from 'utils/isEthereumChain'
+import { ethereumChainIds } from 'constants/supportedNetworks'
 
 // Components
 import { HamburgerIcon } from 'components/Svg'
@@ -32,11 +35,20 @@ const Wrapper = styled.div`
 const Header: React.FC = () => {
   const router = useRouter()
   const { isConnected } = useAccount()
+  const { chain } = useNetwork()
   const { hasAccounts, allAccounts, areAccountsLoaded } = useGlitchAccounts()
   const { onConnect } = useMetamask()
+  const { switchNetwork } = useSwitchNetwork()
 
   const [isOpenMetamaskInfoModal, setIsOpenMetamaskInfoModal] = useState<boolean>(false)
   const [isOpenGlitchInfoModal, setIsOpenGlitchInfoModal] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (isConnected && !isEthereumChain(chain.id)) {
+      switchNetwork(ethereumChainIds[1])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isConnected, chain])
 
   const goToHome = useCallback(() => {
     router.push('/')
