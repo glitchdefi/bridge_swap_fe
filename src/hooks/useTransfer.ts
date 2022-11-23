@@ -120,6 +120,12 @@ export const useTransfer = (
         await approveWriteAsync?.()
       }
 
+      if (Number(allowance) && Number(amount.value) > Number(allowance)) {
+        throw new Error(
+          `You approved only ${allowance} while the required amount is ${amount.value}. Please approve enough amount to proceed the transaction.`,
+        )
+      }
+
       // Start the transfer
       setProcess('transfer')
       const txData = await transferWriteAsync?.()
@@ -128,11 +134,14 @@ export const useTransfer = (
         setProcess('confirmation')
         setTxHash(txData?.hash)
       }
-    } catch (error: unknown) {
+    } catch (error: any) {
       console.log('Transfer Error', error)
-      // error
+
+      if (error?.message?.includes('Please approve enough amount to proceed the transaction.')) {
+        throw error
+      }
     }
-  }, [allowanceRefetch, transferWriteAsync, approveWriteAsync])
+  }, [allowanceRefetch, transferWriteAsync, approveWriteAsync, amount.value])
 
   return {
     onTransfer,

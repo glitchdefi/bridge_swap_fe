@@ -100,8 +100,8 @@ const Home: React.FC = () => {
                 onSuccess={() => {
                   // Reset data
                   setTransaction({
-                    fromNetwork: null,
-                    toNetwork: null,
+                    fromNetwork: DROPDOWN_DATA[0].value[1],
+                    toNetwork: DROPDOWN_DATA[2].value[1],
                     amount: {
                       value: '',
                       hasError: false,

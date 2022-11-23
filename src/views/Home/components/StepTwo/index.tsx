@@ -1,3 +1,5 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-use-before-define */
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { theme } from 'twin.macro'
@@ -60,17 +62,21 @@ export const StepTwo: React.FC<Props> = (props) => {
     }
 
     if (error) {
-      setShowWaiting(false)
-      const message = error?.message?.includes('user rejected transaction')
-        ? 'User rejected transaction'
-        : error?.message || 'An error occurred. Please try again'
-
-      toast(<Toast type="error" message={message} />, {
-        type: 'error',
-      })
+      onShowError(error)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, error, isSuccess])
+
+  const onShowError = useCallback((error: any) => {
+    setShowWaiting(false)
+    const message = error?.message?.includes('user rejected transaction')
+      ? 'User rejected transaction'
+      : error?.message || error || 'An error occurred. Please try again'
+
+    toast(<Toast type="error" message={message} />, {
+      type: 'error',
+    })
+  }, [])
 
   const estimatedReceived = useMemo(
     () => subtract(initialTx.amount.value, formattedFee),
@@ -79,8 +85,12 @@ export const StepTwo: React.FC<Props> = (props) => {
 
   const _onTransfer = useCallback(async () => {
     setShowWaiting(true)
-    await onTransfer()
-  }, [onTransfer])
+    try {
+      await onTransfer()
+    } catch (error) {
+      onShowError(error)
+    }
+  }, [onTransfer, onShowError])
 
   return (
     <div>
