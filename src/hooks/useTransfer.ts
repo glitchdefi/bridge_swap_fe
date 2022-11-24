@@ -115,7 +115,7 @@ export const useTransfer = (
       const allowance = fromWei(allowanceResult.data.toString())
 
       // If not approved, ask to approve
-      if (!Number(allowance)) {
+      if (!Number(allowance) || Number(amount.value) !== Number(allowance)) {
         setProcess('approve')
         await approveWriteAsync?.()
       }
