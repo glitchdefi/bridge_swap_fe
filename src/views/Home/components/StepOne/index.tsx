@@ -14,6 +14,7 @@ import { glitchChainId } from 'constants/supportedNetworks'
 import { Transaction } from 'types'
 
 // Components
+import { MetamaskNotDetectedModal } from 'components/Shared/MetamaskNotDetectedModal'
 import { PrimaryButton } from 'components/Button'
 import { AmountInput } from './AmountInput'
 import { BalanceView } from './BalanceView'
@@ -33,7 +34,7 @@ interface Props {
 
 export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   const { isConnected } = useAccount()
-  const { onConnect } = useMetamask()
+  const { onConnect, error: connectError } = useMetamask()
   const { chain } = useNetwork()
   const {
     data: { formattedBalance },
@@ -48,6 +49,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
       hasError: false,
     },
   })
+  const [isOpenMetamaskNotDetectedModal, setIsOpenMetamaskNotDetectedModal] = useState<boolean>(false)
 
   const estimatedReceived = useMemo(
     () => subtract(transaction.amount.value, formattedFee),
@@ -66,16 +68,22 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   }, [initialTx])
 
   useEffect(() => {
-    // TODO
-    // listener provider change -> set input, output
+    if (connectError && connectError?.message?.includes('Connector not found') && !isOpenMetamaskNotDetectedModal) {
+      setIsOpenMetamaskNotDetectedModal(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectError])
+
+  const toggleMetamaskNotDetectedModal = useCallback(() => {
+    setIsOpenMetamaskNotDetectedModal((prev) => !prev)
   }, [])
 
   const switchNetwork = useCallback(() => {
-    // setTransaction({
-    //   ...transaction,
-    //   fromNetwork: transaction.toNetwork,
-    //   toNetwork: transaction.fromNetwork,
-    // })
+    setTransaction({
+      ...transaction,
+      fromNetwork: transaction.toNetwork,
+      toNetwork: transaction.fromNetwork,
+    })
   }, [transaction])
 
   const onContinue = useCallback(() => {
@@ -164,6 +172,9 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
 
       <EstimatedFeeView show={showEstimatedFee} fee={formattedFee} estimatedReceived={estimatedReceived} />
       {renderButton()}
+
+      {/* Modals */}
+      <MetamaskNotDetectedModal isOpen={isOpenMetamaskNotDetectedModal} onClose={toggleMetamaskNotDetectedModal} />
     </div>
   )
 }

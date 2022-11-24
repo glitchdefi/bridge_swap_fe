@@ -8,6 +8,7 @@ import { Toast } from 'components/Toast'
 export const useMetamask = (): {
   onConnect: () => void
   onDisconnect: () => void
+  error: Error
 } => {
   const connector = new MetaMaskConnector()
   const { connect, error } = useConnect({ connector })
@@ -18,6 +19,8 @@ export const useMetamask = (): {
       const message = error?.message?.includes('user rejected transaction')
         ? 'User rejected transaction'
         : error?.message || 'An error occurred. Please try again'
+
+      if (message?.includes('Connector not found')) return
 
       toast(<Toast type="error" message={message} />, {
         type: 'error',
@@ -33,5 +36,5 @@ export const useMetamask = (): {
     disconnect()
   }, [disconnect])
 
-  return { onConnect, onDisconnect }
+  return { onConnect, onDisconnect, error }
 }

@@ -17,6 +17,7 @@ import { HistoryBox } from './components/HistoryBox'
 import { AccountInfo } from './components/AccountInfo'
 import { MetamaskInfoModal } from './components/MetamaskInfoModal'
 import { GlitchInfoModal } from './components/GlitchInfoModal'
+import { MetamaskNotDetectedModal } from '../Shared/MetamaskNotDetectedModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -37,11 +38,12 @@ const Header: React.FC = () => {
   const { isConnected } = useAccount()
   const { chain } = useNetwork()
   const { hasAccounts, allAccounts, areAccountsLoaded } = useGlitchAccounts()
-  const { onConnect } = useMetamask()
+  const { onConnect, error: connectError } = useMetamask()
   const { switchNetwork } = useSwitchNetwork()
 
   const [isOpenMetamaskInfoModal, setIsOpenMetamaskInfoModal] = useState<boolean>(false)
   const [isOpenGlitchInfoModal, setIsOpenGlitchInfoModal] = useState<boolean>(false)
+  const [isOpenMetamaskNotDetectedModal, setIsOpenMetamaskNotDetectedModal] = useState<boolean>(false)
 
   useEffect(() => {
     if (isConnected && !isEthereumChain(chain.id)) {
@@ -49,6 +51,13 @@ const Header: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isConnected, chain])
+
+  useEffect(() => {
+    if (connectError && connectError?.message?.includes('Connector not found') && !isOpenMetamaskNotDetectedModal) {
+      setIsOpenMetamaskNotDetectedModal(true)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectError])
 
   const goToHome = useCallback(() => {
     router.push('/')
@@ -60,6 +69,10 @@ const Header: React.FC = () => {
 
   const toggleOpenGlitchInfoModal = useCallback(() => {
     setIsOpenGlitchInfoModal((prev) => !prev)
+  }, [])
+
+  const toggleMetamaskNotDetectedModal = useCallback(() => {
+    setIsOpenMetamaskNotDetectedModal((prev) => !prev)
   }, [])
 
   return (
@@ -102,6 +115,7 @@ const Header: React.FC = () => {
       {/* Modals */}
       {isConnected && <MetamaskInfoModal isOpen={isOpenMetamaskInfoModal} onClose={toggleOpenMetamaskInfoModal} />}
       <GlitchInfoModal isOpen={isOpenGlitchInfoModal} onClose={toggleOpenGlitchInfoModal} />
+      <MetamaskNotDetectedModal isOpen={isOpenMetamaskNotDetectedModal} onClose={toggleMetamaskNotDetectedModal} />
     </Wrapper>
   )
 }

@@ -13,15 +13,13 @@ export const useSwitchNetwork = (): {
 
   useEffect(() => {
     if (error) {
-      if (error) {
-        const message = error?.message?.includes('user rejected transaction')
-          ? 'User rejected transaction'
-          : error?.message || 'An error occurred. Please try again'
+      const message = error?.message?.includes('user rejected transaction')
+        ? 'User rejected transaction'
+        : error?.message || 'An error occurred. Please try again'
 
-        toast(<Toast type="error" message={message} />, {
-          type: 'error',
-        })
-      }
+      toast(<Toast type="error" message={message} />, {
+        type: 'error',
+      })
     }
   }, [error])
 

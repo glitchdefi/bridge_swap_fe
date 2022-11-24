@@ -4,6 +4,7 @@ import React, { useState, useCallback } from 'react'
 import { styled, theme } from 'twin.macro'
 
 import { MIN_AMOUNT, MAX_AMOUNT } from 'constants/index'
+import { numberWithCommas } from 'utils/numbers'
 
 // Components
 import { Text } from 'components/Text'
@@ -138,7 +139,7 @@ export const AmountInput: React.FC<Props> = (props) => {
       <WarningWrapper>
         <InfoOutline width={16} height={16} mr="10px" color={theme`colors.primary`} />
         <Text fontSize="12px" color={theme`colors.color7`}>
-          The minimum amount is 150 GLCH and the maximum is 40,000 GLCH.
+          The minimum amount is {MIN_AMOUNT} GLCH and the maximum is {numberWithCommas(MAX_AMOUNT)} GLCH.
         </Text>
       </WarningWrapper>
       {isFromGlitchNetwork && (
