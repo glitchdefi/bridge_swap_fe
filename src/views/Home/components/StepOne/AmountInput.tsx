@@ -42,14 +42,15 @@ const WarningWrapper = styled.div`
 
 interface Props {
   isConnected: boolean
-  isFromGlitchNetwork: boolean
+  showConnectGlitchWallet: boolean
   value: string
   balance: string
   onChange: (amount: string, hasError: boolean) => void
+  onConnectGlitchWallet?: () => void
 }
 
 export const AmountInput: React.FC<Props> = (props) => {
-  const { isConnected, balance, isFromGlitchNetwork, value, onChange } = props
+  const { isConnected, balance, showConnectGlitchWallet, value, onChange, onConnectGlitchWallet } = props
   const [hasError, setHasError] = useState<{
     min: boolean
     max: boolean
@@ -142,7 +143,7 @@ export const AmountInput: React.FC<Props> = (props) => {
           The minimum amount is {MIN_AMOUNT} GLCH and the maximum is {numberWithCommas(MAX_AMOUNT)} GLCH.
         </Text>
       </WarningWrapper>
-      {isFromGlitchNetwork && (
+      {showConnectGlitchWallet && (
         <WarningWrapper className="!mt-6">
           <InfoOutline
             className="!self-start mt-[2px]"
@@ -154,12 +155,22 @@ export const AmountInput: React.FC<Props> = (props) => {
           <div>
             <Text className="mb-4" color={theme`colors.color7`}>
               In order to transfer GLCH from Ethereum network to Glitch network, you also need to connect to Glitch
-              wallet. You do not have Glitch wallet? Download <a className="text-link cursor-pointer">here</a>
+              wallet. You do not have Glitch wallet? Download{' '}
+              <a className="text-link cursor-pointer" href="/download/glitch_wallet_v1.2.0.zip" target="_blank">
+                here
+              </a>
             </Text>
             <Text color={theme`colors.color7`}>
-              Please click <a className="text-link cursor-pointer">the instruction for installation</a> to see how to
-              install Glitch wallet
+              Please click{' '}
+              <a className="text-link cursor-pointer" href="/download/set_up_glitch_wallet.pdf" target="_blank">
+                the instruction for installation
+              </a>{' '}
+              to see how to install Glitch wallet
             </Text>
+            <OutlineButton className="mt-6 mb-2" onClick={onConnectGlitchWallet}>
+              <img src="./images/logo.png" alt="glitch-logo" />
+              <span>Connect with Glitch wallet</span>
+            </OutlineButton>
           </div>
         </WarningWrapper>
       )}

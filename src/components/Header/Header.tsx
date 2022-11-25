@@ -12,8 +12,8 @@ import { ethereumChainIds } from 'constants/supportedNetworks'
 // Components
 import { HamburgerIcon } from 'components/Svg'
 import { OutlineButton } from 'components/Button'
-import { ThemeToggle } from './components/ThemeToggle'
-import { HistoryBox } from './components/HistoryBox'
+// import { ThemeToggle } from './components/ThemeToggle'
+// import { HistoryBox } from './components/HistoryBox'
 import { AccountInfo } from './components/AccountInfo'
 import { MetamaskInfoModal } from './components/MetamaskInfoModal'
 import { GlitchInfoModal } from './components/GlitchInfoModal'
@@ -102,14 +102,14 @@ const Header: React.FC = () => {
               </OutlineButton>
             </div>
           )}
-          <HistoryBox />
+          {/* <HistoryBox /> */}
         </div>
 
         <div className="cursor-pointer lg:hidden">
           <HamburgerIcon width={24} color="white" />
         </div>
-        <span className="mx-4 text-color1"> | </span>
-        <ThemeToggle />
+        {/* <span className="mx-4 text-color1"> | </span>
+        <ThemeToggle /> */}
       </div>
 
       {/* Modals */}

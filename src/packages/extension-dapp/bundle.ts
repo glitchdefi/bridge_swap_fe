@@ -62,7 +62,7 @@ export { isWeb3Injected, web3EnablePromise }
 
 const GLITCH_EXTENSION_NAME = 'glitch-wallet-extension'
 
-function getWindowExtensions(originName: string): Promise<[InjectedExtensionInfo, Injected | void][]> {
+export function getWindowExtensions(originName: string): Promise<[InjectedExtensionInfo, Injected | void][]> {
   return Promise.all(
     Object.entries(win.injectedWeb3).map(
       ([name, { enable, version }]): Promise<[InjectedExtensionInfo, Injected | void]> => {
@@ -85,6 +85,7 @@ function getWindowExtensions(originName: string): Promise<[InjectedExtensionInfo
 // enables all the providers found on the injected window interface
 export function web3Enable(
   originName: string,
+  windowExtension?: Promise<[InjectedExtensionInfo, Injected | void][]>,
   compatInits: (() => Promise<boolean>)[] = [],
 ): Promise<InjectedExtension[]> {
   if (!originName) {
@@ -98,7 +99,7 @@ export function web3Enable(
   web3EnablePromise = documentReadyPromise(
     (): Promise<InjectedExtension[]> =>
       initCompat.then(() =>
-        getWindowExtensions(originName)
+        (windowExtension || getWindowExtensions(originName))
           .then((values): InjectedExtension[] => {
             return values
               .filter((value): value is [InjectedExtensionInfo, Injected] => !!value[1])
@@ -108,7 +109,6 @@ export function web3Enable(
                   // eslint-disable-next-line no-param-reassign
                   ext.accounts.subscribe = (cb: (accounts: InjectedAccount[]) => void | Promise<void>): Unsubcall => {
                     ext.accounts.get().then(cb).catch(console.error)
-
                     return (): void => {
                       // no ubsubscribe needed, this is a single-shot
                     }

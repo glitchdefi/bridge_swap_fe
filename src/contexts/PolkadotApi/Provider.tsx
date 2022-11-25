@@ -13,6 +13,7 @@ import { keyring } from '@polkadot/ui-keyring'
 import { toast } from 'react-toastify'
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults'
 import { KeyringStore } from '@polkadot/ui-keyring/types'
+import { GLITCH_WALLET_CONNECTED_KEY } from 'constants/index'
 import registry from './typeRegistry'
 
 export type PolkadotContextApiTypes = {
@@ -21,7 +22,9 @@ export type PolkadotContextApiTypes = {
   isApiConnected: boolean
   isApiInitialized: boolean
   isHasExtension: boolean
+  isWalletConnected: boolean
   setAccountSelected: (account: string) => void
+  onConnect: () => Promise<void>
 }
 
 interface InjectedAccountExt {
@@ -100,6 +103,8 @@ export const ethereumChains = [
   'armonia-eva',
   'armonia-wall-e',
 ]
+const API_ENDPOINT = 'wss://wss-fullnodes-testnet.glitch.finance'
+const BRIDGE_ORIGIN_NAME = 'bridge.glitch.finance'
 
 let api: ApiPromise
 
@@ -234,11 +239,10 @@ async function loadOnReady(
   }
 }
 
-const apiEndpoint = 'wss://wss-fullnodes-testnet.glitch.finance'
-
 const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ children }) => {
   const [isApiConnected, setIsApiConnected] = useState<boolean>(false)
   const [isApiInitialized, setIsApiInitialized] = useState<boolean>(false)
+  const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false)
   // const [apiError, setApiError] = useState<null | string>(null)
   const [extensions, setExtensions] = useState<InjectedExtension[] | undefined>()
 
@@ -248,19 +252,30 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
     toast.error((error as Error).message)
   }, [])
 
+  const onConnectGlitchWallet = useCallback(async () => {
+    const injectedPromise = web3Enable('bridge.glitch.finance')
+    injectedPromise.then(setExtensions).catch(onError)
+    loadOnReady(api, injectedPromise, undefined)
+      .then(() => {
+        setIsWalletConnected(true)
+        !isApiInitialized && setIsApiInitialized(true)
+        localStorage.setItem(GLITCH_WALLET_CONNECTED_KEY, 'true')
+      })
+      .catch(onError)
+  }, [onError, isApiInitialized])
+
   useEffect(() => {
-    createApi(apiEndpoint, onError)
+    createApi(API_ENDPOINT, onError)
       .then(() => {
         api.on('connected', () => setIsApiConnected(true))
         api.on('disconnected', () => setIsApiConnected(false))
-        api.on('ready', () => {
-          const injectedPromise = web3Enable('bridge.glitch.finance')
-          injectedPromise.then(setExtensions).catch(onError)
-          loadOnReady(api, injectedPromise, undefined)
-            .then(() => {
-              setIsApiInitialized(true)
-            })
-            .catch(onError)
+        api.on('ready', async () => {
+          const isGlitchWalletConnected = localStorage.getItem(GLITCH_WALLET_CONNECTED_KEY) === 'true'
+          if (isGlitchWalletConnected) {
+            await onConnectGlitchWallet()
+          } else {
+            setIsApiInitialized(true)
+          }
         })
       })
       .catch(onError)
@@ -274,7 +289,9 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
         setAccountSelected,
         isApiConnected,
         isApiInitialized,
+        isWalletConnected,
         isHasExtension: !!extensions?.length,
+        onConnect: onConnectGlitchWallet,
       }}
     >
       {children}

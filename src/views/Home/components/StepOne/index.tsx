@@ -2,6 +2,8 @@
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAccount, useNetwork } from 'wagmi'
 
+import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
+
 import { useMetamask } from 'hooks/useMetamask'
 import { useGlitchBalance } from 'hooks/useGlitchBalance'
 import { useFetchEstimatedFee } from 'hooks/useFetchEstimatedFee'
@@ -40,6 +42,11 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
     data: { formattedBalance },
   } = useGlitchBalance()
   const { fee, formattedFee } = useFetchEstimatedFee(chain?.id)
+  const {
+    onConnect: onConnectGlitchWallet,
+    isWalletConnected: isGlitchWalletConnected,
+    isHasExtension: isHasGlitchExtension,
+  } = usePolkadotApi()
 
   const [transaction, setTransaction] = useState<Transaction>({
     fromNetwork: DROPDOWN_DATA[0].value[1], // ChainId
@@ -155,7 +162,10 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
 
       {/* Amount */}
       <AmountInput
-        isFromGlitchNetwork={transaction.fromNetwork === glitchChainId}
+        showConnectGlitchWallet={
+          (transaction.fromNetwork === glitchChainId || transaction.toNetwork === glitchChainId) &&
+          !isGlitchWalletConnected
+        }
         isConnected={isConnected}
         value={transaction.amount.value}
         balance={formattedBalance}
@@ -168,6 +178,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
             },
           })
         }}
+        onConnectGlitchWallet={onConnectGlitchWallet}
       />
 
       <EstimatedFeeView show={showEstimatedFee} fee={formattedFee} estimatedReceived={estimatedReceived} />

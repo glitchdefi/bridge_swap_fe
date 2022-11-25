@@ -26,7 +26,7 @@ const App = dynamic(() => import('views/App'), { ssr: false })
 // const ProductionErrorBoundary = process.env.NODE_ENV === 'production' ? ErrorBoundary : Fragment
 
 const { provider, webSocketProvider } = configureChains(chains, [
-  alchemyProvider({ apiKey: 'lKsRNksBSsDRH7q_Vd6XQC8ttDXL3PIA', stallTimeout: 1000, priority: 1 }),
+  alchemyProvider({ apiKey: 'lKsRNksBSsDRH7q_Vd6XQC8ttDXL3PIA', priority: 1 }),
   publicProvider({ stallTimeout: 1000, priority: 2 }),
   jsonRpcProvider({
     rpc: (chain) => {
