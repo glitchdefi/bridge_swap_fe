@@ -60,15 +60,17 @@ let web3EnablePromise: Promise<InjectedExtension[]> | null = null
 
 export { isWeb3Injected, web3EnablePromise }
 
+const GLITCH_EXTENSION_NAME = 'glitch-wallet-extension'
+
 function getWindowExtensions(originName: string): Promise<[InjectedExtensionInfo, Injected | void][]> {
   return Promise.all(
     Object.entries(win.injectedWeb3).map(
       ([name, { enable, version }]): Promise<[InjectedExtensionInfo, Injected | void]> => {
         // only supported glitch wallet extension
         return Promise.all([
-          Promise.resolve(name === 'glitch-wallet-extension' ? { name, version } : undefined),
+          Promise.resolve(name === GLITCH_EXTENSION_NAME ? { name, version } : undefined),
           Promise.resolve(
-            name === 'glitch-wallet-extension'
+            name === GLITCH_EXTENSION_NAME
               ? enable(originName).catch((error: Error): void => {
                   console.error(`Error initializing ${name}: ${error.message}`)
                 })
@@ -118,13 +120,8 @@ export function web3Enable(
           })
           .catch((): InjectedExtension[] => [])
           .then((values): InjectedExtension[] => {
-            const names = values.map(({ name, version }): string => `${name}/${version}`)
-
+            // const names = values.map(({ name, version }): string => `${name}/${version}`)
             isWeb3Injected = web3IsInjected()
-            console.log(
-              `web3Enable: Enabled ${values.length} extension${values.length !== 1 ? 's' : ''}: ${names.join(', ')}`,
-            )
-
             return values
           }),
       ),

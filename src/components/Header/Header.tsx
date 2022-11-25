@@ -35,7 +35,7 @@ const Wrapper = styled.div`
 
 const Header: React.FC = () => {
   const router = useRouter()
-  const { isConnected } = useAccount()
+  const { isConnected: isMetamaskConnected } = useAccount()
   const { chain } = useNetwork()
   const { hasAccounts, allAccounts, areAccountsLoaded } = useGlitchAccounts()
   const { onConnect, error: connectError } = useMetamask()
@@ -46,11 +46,11 @@ const Header: React.FC = () => {
   const [isOpenMetamaskNotDetectedModal, setIsOpenMetamaskNotDetectedModal] = useState<boolean>(false)
 
   useEffect(() => {
-    if (isConnected && !isEthereumChain(chain.id)) {
+    if (isMetamaskConnected && !isEthereumChain(chain.id)) {
       switchNetwork(ethereumChainIds[1])
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isConnected, chain])
+  }, [isMetamaskConnected, chain])
 
   useEffect(() => {
     if (connectError && connectError?.message?.includes('Connector not found') && !isOpenMetamaskNotDetectedModal) {
@@ -82,28 +82,28 @@ const Header: React.FC = () => {
       </div>
 
       <div className="flex items-center">
-        {isConnected ? (
-          <div className="hidden lg:flex lg:items-center">
-            {!areAccountsLoaded ? (
-              <div className="mr-4 text-primary">Loading Glitch accounts ...</div>
-            ) : hasAccounts ? (
-              <div className="mr-4">
-                <AccountInfo isGlitchNetwork glitchAccounts={allAccounts} onClick={toggleOpenGlitchInfoModal} />
-              </div>
-            ) : null}
+        <div className="hidden lg:flex lg:items-center">
+          {!areAccountsLoaded ? (
+            <div className="mr-4 text-primary">Loading Glitch accounts ...</div>
+          ) : hasAccounts ? (
+            <div className="mr-4">
+              <AccountInfo isGlitchNetwork glitchAccounts={allAccounts} onClick={toggleOpenGlitchInfoModal} />
+            </div>
+          ) : null}
+          {isMetamaskConnected ? (
             <div className="mr-4">
               <AccountInfo glitchAccounts={[]} onClick={toggleOpenMetamaskInfoModal} />
             </div>
-            <HistoryBox />
-          </div>
-        ) : (
-          <div className="hidden lg:block">
-            <OutlineButton onClick={() => onConnect()}>
-              <img src="./images/logo-metamask.png" alt="metamask-logo" />
-              <span>Connect with Metamask</span>
-            </OutlineButton>
-          </div>
-        )}
+          ) : (
+            <div className="hidden lg:block mr-4">
+              <OutlineButton className="!py-1" onClick={() => onConnect()}>
+                <img src="./images/logo-metamask.png" alt="metamask-logo" />
+                <span>Connect with Metamask</span>
+              </OutlineButton>
+            </div>
+          )}
+          <HistoryBox />
+        </div>
 
         <div className="cursor-pointer lg:hidden">
           <HamburgerIcon width={24} color="white" />
@@ -113,7 +113,9 @@ const Header: React.FC = () => {
       </div>
 
       {/* Modals */}
-      {isConnected && <MetamaskInfoModal isOpen={isOpenMetamaskInfoModal} onClose={toggleOpenMetamaskInfoModal} />}
+      {isMetamaskConnected && (
+        <MetamaskInfoModal isOpen={isOpenMetamaskInfoModal} onClose={toggleOpenMetamaskInfoModal} />
+      )}
       <GlitchInfoModal isOpen={isOpenGlitchInfoModal} onClose={toggleOpenGlitchInfoModal} />
       <MetamaskNotDetectedModal isOpen={isOpenMetamaskNotDetectedModal} onClose={toggleMetamaskNotDetectedModal} />
     </Wrapper>

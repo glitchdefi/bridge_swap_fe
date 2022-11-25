@@ -63,9 +63,9 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, glitchAccou
   const [openNetworkDropdown, setOpenNetworkDropdown] = useState<boolean>(false)
 
   const networkSelected = useMemo(() => {
-    const network = DROPDOWN_DATA.find((n) => n.value.includes(chain.id))
+    const network = DROPDOWN_DATA.find((n) => n.value.includes(chain?.id))
     return network ?? { label: 'Unsupported network' }
-  }, [chain.id])
+  }, [chain?.id])
 
   const glitchAccountsDropdownList = useMemo(() => {
     if (!glitchAccounts) return []

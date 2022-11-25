@@ -20,6 +20,7 @@ export type PolkadotContextApiTypes = {
   accountSelected: string
   isApiConnected: boolean
   isApiInitialized: boolean
+  isHasExtension: boolean
   setAccountSelected: (account: string) => void
 }
 
@@ -266,7 +267,16 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
   }, [])
 
   return (
-    <PolkadotApiContext.Provider value={{ api, accountSelected, setAccountSelected, isApiConnected, isApiInitialized }}>
+    <PolkadotApiContext.Provider
+      value={{
+        api,
+        accountSelected,
+        setAccountSelected,
+        isApiConnected,
+        isApiInitialized,
+        isHasExtension: !!extensions?.length,
+      }}
+    >
       {children}
     </PolkadotApiContext.Provider>
   )
