@@ -6,6 +6,7 @@ import { theme } from 'twin.macro'
 import Lottie from 'lottie-react'
 import { toast } from 'react-toastify'
 import { useNetwork } from 'wagmi'
+import { fromWei } from 'web3-utils'
 
 import loadingJson from 'assets/jsons/loading.json'
 
@@ -32,22 +33,80 @@ export const StepTwo: React.FC<Props> = (props) => {
   const { onBack, onSuccess, initialTx } = props
   const { chain } = useNetwork()
   const { fee, formattedFee } = useFetchEstimatedFee(chain?.id)
-  const { onTransfer, process, data, error, isSuccess } = useTransfer(initialTx, fee)
+  const {
+    onTransfer,
+    allowanceRefetch,
+    onApprove,
+    error,
+    approveProcess,
+    approvedData,
+    isApprovedSuccess,
+    transferData,
+    transferProcess,
+    isTransferSuccess,
+  } = useTransfer(initialTx, fee)
 
   const [showWaiting, setShowWaiting] = useState<boolean>(false)
+  const [step, setStep] = useState<'approve' | 'transfer'>('approve')
 
   const fromNetwork = SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.fromNetwork))
   const toNetwork = SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.toNetwork))
 
   useEffect(() => {
-    if (data && isSuccess) {
+    const fetchAllowance = async () => {
+      const allowanceResult = await allowanceRefetch()
+      const allowance = fromWei(allowanceResult.data.toString())
+
+      if (Number(allowance) === Number(initialTx.amount.value)) {
+        setStep('transfer')
+      }
+    }
+
+    fetchAllowance()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
+  useEffect(() => {
+    if (error) {
+      onShowError(error)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [error])
+
+  useEffect(() => {
+    if (approvedData && isApprovedSuccess) {
+      setTimeout(() => {
+        setShowWaiting(false)
+        toast(
+          <Toast
+            message="Approved successfully."
+            actionButton={
+              <a
+                href={`${chain?.blockExplorers?.default?.url}/tx/${approvedData.transactionHash}`}
+                target="_blank"
+                className="text-link"
+                rel="noreferrer"
+              >
+                View on Explorer
+              </a>
+            }
+          />,
+        )
+        setStep('transfer')
+      }, 5000)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [approvedData, isApprovedSuccess])
+
+  useEffect(() => {
+    if (transferData && isTransferSuccess) {
       setShowWaiting(false)
       toast(
         <Toast
           message="Your transaction is completed successfully."
           actionButton={
             <a
-              href={`${chain?.blockExplorers?.default?.url}/tx/${data.transactionHash}`}
+              href={`${chain?.blockExplorers?.default?.url}/tx/${transferData.transactionHash}`}
               target="_blank"
               className="text-link"
               rel="noreferrer"
@@ -58,14 +117,9 @@ export const StepTwo: React.FC<Props> = (props) => {
         />,
       )
       onSuccess()
-      return
-    }
-
-    if (error) {
-      onShowError(error)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, error, isSuccess])
+  }, [transferData, isTransferSuccess])
 
   const onShowError = useCallback((error: any) => {
     setShowWaiting(false)
@@ -86,24 +140,43 @@ export const StepTwo: React.FC<Props> = (props) => {
   const _onTransfer = useCallback(async () => {
     setShowWaiting(true)
     try {
-      await onTransfer()
+      const allowanceResult = await allowanceRefetch()
+      const allowance = fromWei(allowanceResult.data.toString())
+
+      // If not approved, ask to approve
+      if (!Number(allowance) || Number(initialTx.amount.value) !== Number(allowance)) {
+        await onApprove()
+      } else {
+        setTimeout(async () => {
+          await onTransfer()
+        }, 1000)
+      }
     } catch (error) {
       onShowError(error)
     }
-  }, [onTransfer, onShowError])
+  }, [onApprove, onShowError, allowanceRefetch, onTransfer, initialTx.amount])
 
   return (
     <div>
       <div className="flex items-center mb-6">
-        <ArrowLeftIcon className="mr-5 cursor-pointer" width={24} height={24} onClick={onBack} />
+        <ArrowLeftIcon
+          className="mr-5 cursor-pointer"
+          width={24}
+          height={24}
+          onClick={() => {
+            if (!showWaiting) {
+              onBack()
+            }
+          }}
+        />
         <Text color={theme`colors.color9`} fontWeight={600} large>
           Confirmation
         </Text>
       </div>
 
-      <div className="flex flex-col sm:flex-row items-center mb-6">
+      <div className="flex flex-col items-center mb-6 sm:flex-row">
         {/* From */}
-        <div className="flex-1 w-full p-4 border border-color1 bg-color3 cursor-not-allowed">
+        <div className="flex-1 w-full p-4 border cursor-not-allowed border-color1 bg-color3">
           <Text fontSize="12px" mb="8px" color={theme`colors.color6`}>
             From network
           </Text>
@@ -116,12 +189,12 @@ export const StepTwo: React.FC<Props> = (props) => {
           </div>
         </div>
 
-        <div className="p-3 my-4 sm:my-0 sm:mx-6 border border-color1 bg-color3 cursor-not-allowed">
+        <div className="p-3 my-4 border cursor-not-allowed sm:my-0 sm:mx-6 border-color1 bg-color3">
           <HorizontalSwap width={37} height={37} color={theme`colors.color7`} />
         </div>
 
         {/* To */}
-        <div className="flex-1 w-full p-4 border border-color1 bg-color3 cursor-not-allowed">
+        <div className="flex-1 w-full p-4 border cursor-not-allowed border-color1 bg-color3">
           <Text fontSize="12px" mb="8px" color={theme`colors.color6`}>
             To network
           </Text>
@@ -135,7 +208,7 @@ export const StepTwo: React.FC<Props> = (props) => {
         </div>
       </div>
 
-      <div className="flex items-center p-4 border border-color1 bg-color3 cursor-not-allowed">
+      <div className="flex items-center p-4 border cursor-not-allowed border-color1 bg-color3">
         <img className="w-5 h-5 mr-3" src="./images/logo.png" alt="" />
         <Text large color={theme`colors.color9`}>
           {`${initialTx?.amount?.value} GLCH`}
@@ -145,23 +218,31 @@ export const StepTwo: React.FC<Props> = (props) => {
       <EstimatedFeeView show fee={formattedFee} estimatedReceived={estimatedReceived} />
 
       {showWaiting ? (
-        <div className="mt-6 flex items-center">
+        <div className="flex items-center mt-6">
           <div>
             <Lottie className="w-[72px] h-[72px]" animationData={loadingJson} autoPlay loop />
           </div>
-          <Text fontSize="12px" color={theme`colors.color7`}>
-            {process === 'confirmation'
-              ? 'Waiting for blockchain confirmation...'
-              : process === 'approve'
-              ? 'Approve transfer GLCH on Metamask...'
-              : process === 'transfer'
-              ? 'Start transfer on Metamask'
-              : 'Please wait...'}
-          </Text>
+          {step === 'approve' ? (
+            <Text fontSize="12px" color={theme`colors.color7`}>
+              {approveProcess === 'confirmation'
+                ? 'Waiting for blockchain confirmation...'
+                : approveProcess === 'approve'
+                ? 'Approve transfer GLCH on Metamask...'
+                : 'Please wait...'}
+            </Text>
+          ) : (
+            <Text fontSize="12px" color={theme`colors.color7`}>
+              {transferProcess === 'confirmation'
+                ? 'Waiting for blockchain confirmation...'
+                : transferProcess === 'transfer'
+                ? 'Start transfer on Metamask'
+                : 'Please wait...'}
+            </Text>
+          )}
         </div>
       ) : (
         <PrimaryButton className="w-full mt-6" onClick={_onTransfer}>
-          <span>Transfer</span>
+          <span>{step === 'approve' ? 'Approve transfer GLCH on Metamask' : 'Start Transfer'}</span>
         </PrimaryButton>
       )}
     </div>

@@ -14,8 +14,8 @@ export const useFetchEstimatedFee = (chainId: number) => {
   const abi = isEthereumChain(chainId) ? ethSwapBscABI : bscSwapEthABI
 
   const { data, isLoading } = useContractRead({
-    addressOrName: tokenAddress,
-    contractInterface: abi,
+    address: tokenAddress,
+    abi,
     functionName: 'swapFee',
     enabled: !!chainId,
   })

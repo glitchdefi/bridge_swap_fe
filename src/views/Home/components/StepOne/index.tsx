@@ -148,7 +148,8 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
             })
           }}
         />
-        <SwitchButton onClick={switchNetwork} />
+        <div className="my-4 sm:my-0 sm:mx-4" />
+        {/* <SwitchButton onClick={switchNetwork} /> */}
         <SelectNetwork
           value={transaction.toNetwork}
           list={DROPDOWN_DATA?.filter((n) => !n.chainIds?.includes(transaction.fromNetwork))}
@@ -163,8 +164,9 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
       {/* Amount */}
       <AmountInput
         showConnectGlitchWallet={
-          (transaction.fromNetwork === glitchChainId || transaction.toNetwork === glitchChainId) &&
-          !isGlitchWalletConnected
+          !isGlitchWalletConnected ||
+          ((transaction.fromNetwork === glitchChainId || transaction.toNetwork === glitchChainId) &&
+            !isHasGlitchExtension)
         }
         isConnected={isConnected}
         value={transaction.amount.value}

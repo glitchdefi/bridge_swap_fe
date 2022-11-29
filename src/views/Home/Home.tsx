@@ -115,7 +115,7 @@ const Home: React.FC = () => {
               />
             )}
             {isConnected && checkUnsupportedChain(chain?.id) && (
-              <div className="unsupported-overlay absolute top-0 left-0 right-0 bottom-0 cursor-not-allowed" />
+              <div className="absolute top-0 bottom-0 left-0 right-0 cursor-not-allowed unsupported-overlay" />
             )}
           </CardContent>
         </Card>

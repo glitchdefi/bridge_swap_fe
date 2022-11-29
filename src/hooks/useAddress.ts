@@ -1,6 +1,6 @@
 import { useMemo } from 'react'
 import { truncateAddress } from 'utils/strings'
-import { useAccount, useEnsName } from 'wagmi'
+import { useAccount } from 'wagmi'
 
 export const useAddress = (): { address: string; shortAddress: string } => {
   const { address } = useAccount()

@@ -32,7 +32,7 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
       <Layout>
         <Container>
           {!isApiConnected || !isApiInitialized ? (
-            <div className="w-full h-screen flex flex-col items-center justify-center">
+            <div className="flex flex-col items-center justify-center w-full h-screen">
               <Lottie className="w-[120px] h-[120px]" animationData={loadingJson} autoPlay loop />
               <div className="text-primary">Initializing connection ...</div>
             </div>

@@ -85,7 +85,6 @@ export function getWindowExtensions(originName: string): Promise<[InjectedExtens
 // enables all the providers found on the injected window interface
 export function web3Enable(
   originName: string,
-  windowExtension?: Promise<[InjectedExtensionInfo, Injected | void][]>,
   compatInits: (() => Promise<boolean>)[] = [],
 ): Promise<InjectedExtension[]> {
   if (!originName) {
@@ -99,7 +98,7 @@ export function web3Enable(
   web3EnablePromise = documentReadyPromise(
     (): Promise<InjectedExtension[]> =>
       initCompat.then(() =>
-        (windowExtension || getWindowExtensions(originName))
+        getWindowExtensions(originName)
           .then((values): InjectedExtension[] => {
             return values
               .filter((value): value is [InjectedExtensionInfo, Injected] => !!value[1])

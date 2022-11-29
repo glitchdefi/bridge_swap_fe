@@ -2,7 +2,7 @@
 /* eslint-disable @typescript-eslint/no-shadow */
 import { useCallback, useState } from 'react'
 import { erc20ABI, useContractRead, usePrepareContractWrite, useContractWrite, useWaitForTransaction } from 'wagmi'
-import { toHex, toWei, fromWei } from 'web3-utils'
+import { toHex, toWei } from 'web3-utils'
 
 import ethSwapToBscABI from 'assets/jsons/eth_swap_bsc_abi.json'
 import ethSwapToGlitchABI from 'assets/jsons/eth_swap_glitch_abi.json'
@@ -27,10 +27,15 @@ export const useTransfer = (
   fee: string,
 ): {
   onTransfer: () => Promise<void>
-  data: TransactionReceipt
+  onApprove: () => Promise<void>
+  allowanceRefetch: () => Promise<any>
   error: any
-  process: 'approve' | 'transfer' | 'confirmation' | null
-  isSuccess: boolean
+  approveProcess: 'approve' | 'confirmation' | null
+  approvedData: TransactionReceipt
+  isApprovedSuccess: boolean
+  transferData: TransactionReceipt
+  transferProcess: 'transfer' | 'confirmation' | null
+  isTransferSuccess: boolean
 } => {
   const { address } = useAddress()
   const { accountSelected: glitchAccountSelected } = usePolkadotApi()
@@ -66,88 +71,100 @@ export const useTransfer = (
 
   // Check the approved status or not
   const { refetch: allowanceRefetch } = useContractRead({
-    addressOrName: tokenContractAddress,
-    contractInterface: erc20ABI,
+    address: tokenContractAddress,
+    abi: erc20ABI,
     functionName: 'allowance',
-    args: [address, bridgeContractAddress],
+    args: [address as `0x${string}`, bridgeContractAddress],
     enabled: false,
   })
 
   // Config the approve contract
   const { config: approveConfig } = usePrepareContractWrite({
-    addressOrName: tokenContractAddress,
-    contractInterface: erc20ABI,
+    address: tokenContractAddress,
+    abi: erc20ABI,
     functionName: 'approve',
-    args: [bridgeContractAddress, toHex(toWei(amount.value))],
+    args: [bridgeContractAddress, toHex(toWei(amount.value)) as any],
     overrides: {
-      from: address,
+      from: address as `0x${string}`,
     },
+    enabled: false,
   })
   // Config transfer contract
   const { config: transferConfig } = usePrepareContractWrite({
-    addressOrName: bridgeContractAddress,
-    contractInterface: transferContractInterface,
+    address: bridgeContractAddress,
+    abi: transferContractInterface,
     functionName: transferFunctionName,
     args:
       isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
         ? [glitchAccountSelected, toHex(toWei(amount.value))]
         : [toHex(toWei(amount.value))],
-    overrides:
-      isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
-        ? {}
-        : {
-            from: address,
-            value: fee,
-          },
+    overrides: (isEthereumChain(fromNetwork) && isGlitchChain(toNetwork)
+      ? {}
+      : {
+          from: address,
+          value: fee,
+        }) as any,
+    enabled: false,
   })
 
   const { writeAsync: approveWriteAsync, error: approveError } = useContractWrite(approveConfig)
   const { writeAsync: transferWriteAsync, error: confirmTransferError } = useContractWrite(transferConfig)
 
+  const [approveProcess, setApproveProcess] = useState<'approve' | 'confirmation' | null>(null)
+  const [transferProcess, setTransferProcess] = useState<'transfer' | 'confirmation' | null>(null)
   const [txHash, setTxHash] = useState<string | null>(null)
-  const [process, setProcess] = useState<'approve' | 'transfer' | 'confirmation' | null>(null)
+  const [approveTxHash, setApproveTxHash] = useState<string | null>(null)
 
-  const { data, error: transferError, isSuccess } = useWaitForTransaction({ hash: txHash })
+  const {
+    data: transferData,
+    error: transferError,
+    isSuccess: isTransferSuccess,
+  } = useWaitForTransaction({ hash: txHash as `0x${string}` })
+  const {
+    data: approvedData,
+    error: approvedError,
+    isSuccess: isApprovedSuccess,
+  } = useWaitForTransaction({ hash: approveTxHash as `0x${string}` })
 
   const onTransfer = useCallback(async () => {
     try {
-      const allowanceResult = await allowanceRefetch()
-      const allowance = fromWei(allowanceResult.data.toString())
-
-      // If not approved, ask to approve
-      if (!Number(allowance) || Number(amount.value) !== Number(allowance)) {
-        setProcess('approve')
-        await approveWriteAsync?.()
-      }
-
-      if (Number(allowance) && Number(amount.value) > Number(allowance)) {
-        throw new Error(
-          `You approved only ${allowance} while the required amount is ${amount.value}. Please approve enough amount to proceed the transaction.`,
-        )
-      }
-
       // Start the transfer
-      setProcess('transfer')
+      setTransferProcess('transfer')
       const txData = await transferWriteAsync?.()
 
       if (txData) {
-        setProcess('confirmation')
+        setTransferProcess('confirmation')
         setTxHash(txData?.hash)
       }
     } catch (error: any) {
       console.log('Transfer Error', error)
-
-      if (error?.message?.includes('Please approve enough amount to proceed the transaction.')) {
-        throw error
-      }
     }
-  }, [allowanceRefetch, transferWriteAsync, approveWriteAsync, amount.value])
+  }, [transferWriteAsync])
+
+  const onApprove = useCallback(async () => {
+    try {
+      setApproveProcess('approve')
+      const txData = await approveWriteAsync?.()
+
+      if (txData) {
+        setApproveProcess('confirmation')
+        setApproveTxHash(txData?.hash)
+      }
+    } catch (error: any) {
+      console.log('Approved Error', error)
+    }
+  }, [approveWriteAsync])
 
   return {
     onTransfer,
-    data,
-    error: approveError || confirmTransferError || transferError,
-    process,
-    isSuccess,
+    onApprove,
+    allowanceRefetch,
+    error: approveError || confirmTransferError || transferError || approvedError,
+    approveProcess,
+    approvedData,
+    isApprovedSuccess,
+    transferProcess,
+    transferData,
+    isTransferSuccess,
   }
 }

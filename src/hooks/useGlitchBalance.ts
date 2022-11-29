@@ -16,8 +16,8 @@ export const useGlitchBalance = () => {
   const tokenAddress = isEthereumChain(chain?.id) ? GLITCH_ETH_TOKEN_ADDRESS : GLITCH_BSC_TOKEN_ADDRESS
 
   const { data, isError, isLoading, refetch } = useContractRead({
-    addressOrName: address && tokenAddress ? tokenAddress : null,
-    contractInterface: erc20ABI,
+    address: address && tokenAddress ? tokenAddress : null,
+    abi: erc20ABI,
     functionName: 'balanceOf',
     args: [address],
   })
