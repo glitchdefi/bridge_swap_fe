@@ -3,7 +3,6 @@
 import React, { useState, useCallback } from 'react'
 import { styled, theme } from 'twin.macro'
 
-import { MIN_AMOUNT, MAX_AMOUNT } from 'constants/index'
 import { numberWithCommas } from 'utils/numbers'
 
 // Components
@@ -45,12 +44,23 @@ interface Props {
   showConnectGlitchWallet: boolean
   value: string
   balance: string
+  minAmount: number
+  maxAmount: number
   onChange: (amount: string, hasError: boolean) => void
   onConnectGlitchWallet?: () => void
 }
 
 export const AmountInput: React.FC<Props> = (props) => {
-  const { isConnected, balance, showConnectGlitchWallet, value, onChange, onConnectGlitchWallet } = props
+  const {
+    isConnected,
+    balance,
+    showConnectGlitchWallet,
+    value,
+    onChange,
+    onConnectGlitchWallet,
+    minAmount,
+    maxAmount,
+  } = props
   const [hasError, setHasError] = useState<{
     min: boolean
     max: boolean
@@ -70,9 +80,9 @@ export const AmountInput: React.FC<Props> = (props) => {
       // E.g: 100.888888888
       const newValue = amount?.includes('.') ? amount?.split('.')[0] : amount
 
-      const isMinError = newValue && Number(newValue) < Number(MIN_AMOUNT)
+      const isMinError = newValue && Number(newValue) < Number(minAmount)
       const isMaxError =
-        (Number(newValue) === Number(MAX_AMOUNT) && Number(amount?.split('.')[1]) > 0) || Number(newValue) > MAX_AMOUNT
+        (Number(newValue) === Number(maxAmount) && Number(amount?.split('.')[1]) > 0) || Number(newValue) > maxAmount
       const isDecimalsError = amount?.split('.')?.length > 0 && amount?.split('.')[1]?.length > 18
 
       if (isMinError) {
@@ -88,7 +98,7 @@ export const AmountInput: React.FC<Props> = (props) => {
       // onChange(Number(value) > Number(glitchBalance) ? glitchBalance : value)
       onChange(amount, isMinError || isMaxError || isDecimalsError)
     },
-    [hasError, onChange],
+    [hasError, onChange, minAmount, maxAmount],
   )
 
   const onMaxClick = useCallback(() => {
@@ -140,7 +150,8 @@ export const AmountInput: React.FC<Props> = (props) => {
       <WarningWrapper>
         <InfoOutline width={16} height={16} mr="10px" color={theme`colors.primary`} />
         <Text fontSize="12px" color={theme`colors.color7`}>
-          The minimum amount is {MIN_AMOUNT} GLCH and the maximum is {numberWithCommas(MAX_AMOUNT)} GLCH.
+          The minimum amount is {numberWithCommas(minAmount)} GLCH and the maximum is {numberWithCommas(maxAmount)}{' '}
+          GLCH.
         </Text>
       </WarningWrapper>
       {showConnectGlitchWallet && (
@@ -156,13 +167,13 @@ export const AmountInput: React.FC<Props> = (props) => {
             <Text className="mb-4" color={theme`colors.color7`}>
               In order to transfer GLCH from Ethereum network to Glitch network, you also need to connect to Glitch
               wallet. You do not have Glitch wallet? Download{' '}
-              <a className="text-link cursor-pointer" href="/download/glitch_wallet_v1.2.0.zip" target="_blank">
+              <a className="cursor-pointer text-link" href="/download/glitch_wallet_v1.2.0.zip" target="_blank">
                 here
               </a>
             </Text>
             <Text color={theme`colors.color7`}>
               Please click{' '}
-              <a className="text-link cursor-pointer" href="/download/set_up_glitch_wallet.pdf" target="_blank">
+              <a className="cursor-pointer text-link" href="/download/set_up_glitch_wallet.pdf" target="_blank">
                 the instruction for installation
               </a>{' '}
               to see how to install Glitch wallet

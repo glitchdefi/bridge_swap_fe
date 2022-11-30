@@ -7,6 +7,7 @@ import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
 import { useMetamask } from 'hooks/useMetamask'
 import { useGlitchBalance } from 'hooks/useGlitchBalance'
 import { useFetchEstimatedFee } from 'hooks/useFetchEstimatedFee'
+import { useMinMaxAmount } from 'hooks/useMinMaxAmount'
 
 import { subtract } from 'utils/numbers'
 import { checkUnsupportedChain } from 'utils/checkUnsupportedChain'
@@ -21,7 +22,7 @@ import { PrimaryButton } from 'components/Button'
 import { AmountInput } from './AmountInput'
 import { BalanceView } from './BalanceView'
 import { SelectNetwork } from './SelectNetwork'
-import { SwitchButton } from './SwitchButton'
+// import { SwitchButton } from './SwitchButton'
 import { EstimatedFeeView } from '../EstimatedFeeView'
 
 export const DROPDOWN_DATA = [
@@ -42,6 +43,9 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
     data: { formattedBalance },
   } = useGlitchBalance()
   const { fee, formattedFee } = useFetchEstimatedFee(chain?.id)
+  const {
+    formatted: { minAmount, maxAmount },
+  } = useMinMaxAmount(chain?.id)
   const {
     onConnect: onConnectGlitchWallet,
     isWalletConnected: isGlitchWalletConnected,
@@ -85,13 +89,13 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
     setIsOpenMetamaskNotDetectedModal((prev) => !prev)
   }, [])
 
-  const switchNetwork = useCallback(() => {
-    setTransaction({
-      ...transaction,
-      fromNetwork: transaction.toNetwork,
-      toNetwork: transaction.fromNetwork,
-    })
-  }, [transaction])
+  // const switchNetwork = useCallback(() => {
+  //   setTransaction({
+  //     ...transaction,
+  //     fromNetwork: transaction.toNetwork,
+  //     toNetwork: transaction.fromNetwork,
+  //   })
+  // }, [transaction])
 
   const onContinue = useCallback(() => {
     if (!isContinueDisabled) {
@@ -163,6 +167,8 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
 
       {/* Amount */}
       <AmountInput
+        minAmount={minAmount as number}
+        maxAmount={maxAmount as number}
         showConnectGlitchWallet={
           !isGlitchWalletConnected ||
           ((transaction.fromNetwork === glitchChainId || transaction.toNetwork === glitchChainId) &&
