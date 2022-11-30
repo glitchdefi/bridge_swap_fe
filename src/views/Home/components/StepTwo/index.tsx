@@ -57,7 +57,7 @@ export const StepTwo: React.FC<Props> = (props) => {
       const allowanceResult = await allowanceRefetch()
       const allowance = fromWei(allowanceResult.data.toString())
 
-      if (Number(allowance) === Number(initialTx.amount.value)) {
+      if (Number(allowance) >= Number(initialTx.amount.value)) {
         setStep('transfer')
       }
     }
@@ -144,12 +144,11 @@ export const StepTwo: React.FC<Props> = (props) => {
       const allowance = fromWei(allowanceResult.data.toString())
 
       // If not approved, ask to approve
-      if (!Number(allowance) || Number(initialTx.amount.value) !== Number(allowance)) {
+      // 1. allowance = 0 || amount > allowance
+      if (!Number(allowance) || Number(initialTx.amount.value) > Number(allowance)) {
         await onApprove()
       } else {
-        setTimeout(async () => {
-          await onTransfer()
-        }, 1000)
+        await onTransfer()
       }
     } catch (error) {
       onShowError(error)

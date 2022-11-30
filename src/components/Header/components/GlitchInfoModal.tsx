@@ -36,14 +36,14 @@ export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
       <Modal.Content>
         <div>
           <div className="flex items-center p-4">
-            <img className="w-14 h-14 mr-4" src="./images/logo.png" alt="logo-glitch" />
+            <img className="mr-4 w-14 h-14" src="./images/logo.png" alt="logo-glitch" />
             <div>
               <Text className="mb-2 !text-color8 !font-semibold">Connected with Glitch</Text>
               <div className="flex items-center">
                 <Text className="mr-1">Currently on network:</Text>
                 <div className="flex items-center">
                   <img className="w-5 h-5 mr-1" src="./images/logo.png" alt="logo-glitch" />
-                  <Text>Glitch Testnet</Text>
+                  <Text>Glitch UAT</Text>
                 </div>
               </div>
             </div>
@@ -66,7 +66,7 @@ export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
           <div className="p-4">
             <div className="flex items-center cursor-pointer">
-              <div className="text-link mr-2">View on Explorer</div>
+              <div className="mr-2 text-link">View on Explorer</div>
               <SelectOutlinedIcon width={16} height={16} />
             </div>
           </div>

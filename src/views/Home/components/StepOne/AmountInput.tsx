@@ -65,10 +65,12 @@ export const AmountInput: React.FC<Props> = (props) => {
     min: boolean
     max: boolean
     decimals: boolean
+    insufficientBalance: boolean
   }>({
     min: false,
     max: false,
     decimals: false,
+    insufficientBalance: false,
   })
 
   const onAmountChange = useCallback(
@@ -84,25 +86,22 @@ export const AmountInput: React.FC<Props> = (props) => {
       const isMaxError =
         (Number(newValue) === Number(maxAmount) && Number(amount?.split('.')[1]) > 0) || Number(newValue) > maxAmount
       const isDecimalsError = amount?.split('.')?.length > 0 && amount?.split('.')[1]?.length > 18
+      const isInsufficientBalance = Number(newValue) > Number(balance)
 
-      if (isMinError) {
-        setHasError({ ...hasError, min: true })
-      } else if (isDecimalsError) {
-        setHasError({ ...hasError, decimals: true })
-      } else if (isMaxError) {
-        setHasError({ ...hasError, max: true })
-      } else {
-        setHasError({ min: false, max: false, decimals: false })
-      }
+      setHasError({
+        min: isMinError,
+        max: isMaxError,
+        decimals: isDecimalsError,
+        insufficientBalance: isInsufficientBalance,
+      })
 
-      // onChange(Number(value) > Number(glitchBalance) ? glitchBalance : value)
-      onChange(amount, isMinError || isMaxError || isDecimalsError)
+      onChange(amount, isMinError || isMaxError || isDecimalsError || isInsufficientBalance)
     },
-    [hasError, onChange, minAmount, maxAmount],
+    [onChange, minAmount, maxAmount, balance],
   )
 
   const onMaxClick = useCallback(() => {
-    setHasError({ min: false, max: false, decimals: false })
+    setHasError({ min: false, max: false, decimals: false, insufficientBalance: false })
     onChange(balance, false)
   }, [balance, onChange])
 
@@ -144,6 +143,11 @@ export const AmountInput: React.FC<Props> = (props) => {
         {hasError.decimals && (
           <Text className="mt-2" color={theme`colors.fail`}>
             Cannot enter more than 18 decimal places.
+          </Text>
+        )}
+        {hasError.insufficientBalance && (
+          <Text className="mt-2" color={theme`colors.fail`}>
+            Insufficient Balance
           </Text>
         )}
       </Wrapper>

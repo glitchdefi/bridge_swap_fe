@@ -87,10 +87,11 @@ export const useTransfer = (
     overrides: {
       from: address as `0x${string}`,
     },
-    enabled: false,
   })
-  // Config transfer contract
-  const { config: transferConfig } = usePrepareContractWrite({
+
+  const { writeAsync: approveWriteAsync, error: approveError } = useContractWrite(approveConfig)
+  const { writeAsync: transferWriteAsync, error: confirmTransferError } = useContractWrite({
+    mode: 'recklesslyUnprepared',
     address: bridgeContractAddress,
     abi: transferContractInterface,
     functionName: transferFunctionName,
@@ -104,11 +105,7 @@ export const useTransfer = (
           from: address,
           value: fee,
         }) as any,
-    enabled: false,
   })
-
-  const { writeAsync: approveWriteAsync, error: approveError } = useContractWrite(approveConfig)
-  const { writeAsync: transferWriteAsync, error: confirmTransferError } = useContractWrite(transferConfig)
 
   const [approveProcess, setApproveProcess] = useState<'approve' | 'confirmation' | null>(null)
   const [transferProcess, setTransferProcess] = useState<'transfer' | 'confirmation' | null>(null)

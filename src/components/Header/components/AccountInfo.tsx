@@ -102,7 +102,7 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, glitchAccou
             }}
           >
             <Text color={theme`colors.color8`} className="mr-2">
-              {isGlitchNetwork ? 'Glitch Testnet' : networkSelected?.label}
+              {isGlitchNetwork ? 'Glitch UAT' : networkSelected?.label}
             </Text>
             <OutlineDownArrow width={12} height={12} />
           </div>
