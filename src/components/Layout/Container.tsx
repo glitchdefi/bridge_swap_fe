@@ -8,7 +8,7 @@ const StyledContainer = styled(Box)<{ isDark?: boolean }>`
   ${({ isDark }) =>
     isDark
       ? css`
-          background-image: url(/images/bg.jpg);
+          background-image: url(/images/bg.webp);
           background-position: center center;
           background-repeat: no-repeat;
           background-size: cover;

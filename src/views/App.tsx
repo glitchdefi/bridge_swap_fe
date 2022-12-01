@@ -8,7 +8,6 @@ import loadingJson from 'assets/jsons/loading.json'
 import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
 
 // Components
-import { Container } from 'components/Layout'
 import { Header } from 'components/Header'
 import { Footer } from 'components/Footer'
 
@@ -30,20 +29,18 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
   return (
     <>
       <Layout>
-        <Container>
-          {!isApiConnected || !isApiInitialized ? (
-            <div className="flex flex-col items-center justify-center w-full h-screen">
-              <Lottie className="w-[120px] h-[120px]" animationData={loadingJson} autoPlay loop />
-              <div className="text-primary">Initializing connection ...</div>
-            </div>
-          ) : (
-            <>
-              <Header />
-              <Component {...pageProps} />
-              <Footer />
-            </>
-          )}
-        </Container>
+        {!isApiConnected || !isApiInitialized ? (
+          <div className="flex flex-col items-center justify-center w-full h-screen">
+            <Lottie className="w-[120px] h-[120px]" animationData={loadingJson} autoPlay loop />
+            <div className="text-primary">Initializing connection ...</div>
+          </div>
+        ) : (
+          <>
+            <Header />
+            <Component {...pageProps} />
+            <Footer />
+          </>
+        )}
       </Layout>
     </>
   )

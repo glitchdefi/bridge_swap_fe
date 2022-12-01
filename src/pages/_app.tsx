@@ -17,6 +17,8 @@ import { bscTestnet, chains } from 'constants/supportedNetworks'
 // Context
 import { LanguageProvider } from 'contexts/Localization'
 
+import { Container } from 'components/Layout'
+
 import 'styles/css/tailwindcss.css'
 import 'react-toastify/dist/ReactToastify.css'
 
@@ -64,7 +66,9 @@ const MyApp: React.FC<AppProps> = (props) => {
           <LanguageProvider>
             <GlobalStyles />
             <ThemeProvider>
-              <App {...props} />
+              <Container>
+                <App {...props} />
+              </Container>
             </ThemeProvider>
           </LanguageProvider>
           <ToastContainer theme="dark" icon={false} />
