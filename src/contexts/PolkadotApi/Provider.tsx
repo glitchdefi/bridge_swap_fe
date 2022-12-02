@@ -103,7 +103,7 @@ export const ethereumChains = [
   'armonia-eva',
   'armonia-wall-e',
 ]
-const API_ENDPOINT = 'ws://13.212.197.46:9944'
+const API_ENDPOINT = 'wss://wss-uat.glitch.finance'
 const BRIDGE_ORIGIN_NAME = 'bridge.glitch.finance'
 
 let api: ApiPromise
