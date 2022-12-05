@@ -3,6 +3,9 @@ import { styled, theme } from 'twin.macro'
 
 import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
 
+import { GLITCH_TESTNET_EXPLORER_URL } from 'constants/index'
+import { useCopy } from 'hooks/useCopy'
+
 // Components
 import { Input } from 'components/Input'
 import { Modal } from 'components/Modal'
@@ -29,6 +32,7 @@ interface Props {
 
 export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
   const { accountSelected } = usePolkadotApi()
+  const { onCopy } = useCopy()
 
   return (
     <Modal isOpen={isOpen}>
@@ -56,7 +60,7 @@ export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
                 disabled
                 value={accountSelected}
                 rightComponent={
-                  <div className="cursor-pointer">
+                  <div role="button" tabIndex={0} className="cursor-pointer" onClick={() => onCopy(accountSelected)}>
                     <CopyIcon />
                   </div>
                 }
@@ -66,14 +70,21 @@ export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
           <div className="p-4">
             <div className="flex items-center cursor-pointer">
-              <div className="mr-2 text-link">View on Explorer</div>
-              <SelectOutlinedIcon width={16} height={16} />
+              <a
+                href={GLITCH_TESTNET_EXPLORER_URL}
+                className="flex items-center cursor-pointer"
+                target="_blank"
+                rel="noreferrer"
+              >
+                <div className="mr-2 text-link">View on Explorer</div>
+                <SelectOutlinedIcon width={16} height={16} />
+              </a>
             </div>
           </div>
 
-          <div className="p-4">
+          {/* <div className="p-4">
             <div className="secondary-outline-btn">Disconnect wallet</div>
-          </div>
+          </div> */}
         </div>
       </Modal.Content>
     </Modal>

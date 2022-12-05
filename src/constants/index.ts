@@ -31,6 +31,8 @@ export const SUPPORTED_NETWORK = [
   },
 ]
 
+export const GLITCH_TESTNET_EXPLORER_URL = 'https://testnet-explorer.glitch.finance'
+
 // export const GLITCH_ETH_TOKEN_ADDRESS = '0x9F720F007b9d9169c4481CeaA2fA82fdfec0b21F'
 export const GLITCH_ETH_TOKEN_ADDRESS = '0x7428417089727238b4B3BA5933c77357Af9B56f5'
 export const ETH_BRIDGE_CONTRACT_ADDRESS = '0xEd51cCd8b9DDc59e71E692C142702e3ec5738bd4'
