@@ -73,6 +73,7 @@ export function getWindowExtensions(originName: string): Promise<[InjectedExtens
             name === GLITCH_EXTENSION_NAME
               ? enable(originName).catch((error: Error): void => {
                   console.error(`Error initializing ${name}: ${error.message}`)
+                  throw error
                 })
               : undefined,
           ),
@@ -117,7 +118,12 @@ export function web3Enable(
                 return { ...info, ...ext }
               })
           })
-          .catch((): InjectedExtension[] => [])
+          .catch((error): InjectedExtension[] => {
+            if (error?.message?.includes('Rejected')) {
+              return [{ name: GLITCH_EXTENSION_NAME, rejected: true }] as unknown as InjectedExtension[]
+            }
+            return []
+          })
           .then((values): InjectedExtension[] => {
             // const names = values.map(({ name, version }): string => `${name}/${version}`)
             isWeb3Injected = web3IsInjected()

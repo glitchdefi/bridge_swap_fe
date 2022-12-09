@@ -51,7 +51,7 @@ interface Props {
 
 const DROPDOWN_DATA = [
   { ...NETWORK_DROPDOWN.eth, icon: './images/logo-eth.png', iconCls: 'w-5 h-5' },
-  { ...NETWORK_DROPDOWN.bsc, icon: './images/logo-bnb.png', iconCls: 'w-5 h-5' },
+  // { ...NETWORK_DROPDOWN.bsc, icon: './images/logo-bnb.png', iconCls: 'w-5 h-5' },
 ]
 
 export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, glitchAccounts, onClick }) => {

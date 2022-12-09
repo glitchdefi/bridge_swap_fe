@@ -18,12 +18,12 @@ export const SwitchNetworkModal: React.FC<Props> = (props) => {
     <Modal isOpen={isOpen}>
       <Modal.Header title="Switch network" onClose={onClose} />
       <Modal.Content>
-        {SUPPORTED_NETWORK.map((o, i) => {
+        {SUPPORTED_NETWORK.filter((o) => o.label === 'Ethereum').map((o, i) => {
           return (
             <div
               role="button"
               tabIndex={0}
-              className="p-4 flex items-center cursor-pointer hover:bg-color4 transition-all duration-300"
+              className="flex items-center p-4 transition-all duration-300 cursor-pointer hover:bg-color4"
               key={`${i}`}
               onClick={() => {
                 switchNetwork(o.chainIds[1])

@@ -45,7 +45,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   const { fee, formattedFee } = useFetchEstimatedFee(chain?.id)
   const {
     formatted: { minAmount, maxAmount },
-  } = useMinMaxAmount(chain?.id)
+  } = useMinMaxAmount()
   const {
     onConnect: onConnectGlitchWallet,
     isWalletConnected: isGlitchWalletConnected,
@@ -66,12 +66,18 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
     () => subtract(transaction.amount.value, formattedFee),
     [transaction.amount.value, formattedFee],
   )
-  const isContinueDisabled =
-    !transaction.amount.value ||
-    transaction.amount.hasError ||
-    !transaction.fromNetwork ||
-    !transaction.toNetwork ||
-    Number(estimatedReceived) <= 0
+  const isContinueDisabled = useMemo(() => {
+    return (
+      !transaction.amount.value ||
+      transaction.amount.hasError ||
+      !transaction.fromNetwork ||
+      !transaction.toNetwork ||
+      Number(estimatedReceived) <= 0 ||
+      !isGlitchWalletConnected ||
+      !isHasGlitchExtension
+    )
+  }, [transaction, estimatedReceived, isGlitchWalletConnected, isHasGlitchExtension])
+
   const showEstimatedFee = fee && !!transaction.amount.value && !!transaction.fromNetwork
 
   useEffect(() => {

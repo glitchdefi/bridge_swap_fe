@@ -175,13 +175,14 @@ export const AmountInput: React.FC<Props> = (props) => {
                 here
               </a>
             </Text>
-            <Text color={theme`colors.color7`}>
+            <Text className="mb-4" color={theme`colors.color7`}>
               Please click{' '}
               <a className="cursor-pointer text-link" href="/download/set_up_glitch_wallet.pdf" target="_blank">
                 the instruction for installation
               </a>{' '}
               to see how to install Glitch wallet
             </Text>
+            <Text color={theme`colors.color7`}>When it is ready, please refresh this page to continue. Thank you!</Text>
             <OutlineButton className="mt-6 mb-2" onClick={onConnectGlitchWallet}>
               <img src="./images/logo.png" alt="glitch-logo" />
               <span>Connect with Glitch wallet</span>

@@ -43,7 +43,14 @@ const Footer: React.FC = () => {
             </Text>
           </div>
 
-          <Text className="underline cursor-pointer" bold color={theme`colors.primary`}>
+          <Text
+            as="a"
+            target="_blank"
+            href="https://glitch.finance/contact/"
+            className="underline cursor-pointer"
+            bold
+            color={theme`colors.primary`}
+          >
             Contact us
           </Text>
         </div>

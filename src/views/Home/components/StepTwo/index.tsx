@@ -241,7 +241,7 @@ export const StepTwo: React.FC<Props> = (props) => {
         </div>
       ) : (
         <PrimaryButton className="w-full mt-6" onClick={_onTransfer}>
-          <span>{step === 'approve' ? 'Approve transfer GLCH on Metamask' : 'Start Transfer'}</span>
+          <span>{step === 'approve' ? 'Approve transfer' : 'Start Transfer'}</span>
         </PrimaryButton>
       )}
     </div>

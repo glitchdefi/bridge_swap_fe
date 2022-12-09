@@ -48,4 +48,4 @@ export const glitchChainId = 42
 // 56 - BSC Mainnet
 // 97 - BSC Testnet
 // 42 - GLCH
-export const supportedChainIds = [...ethereumChainIds, ...bscChainIds, glitchChainId]
+export const supportedChainIds = [...ethereumChainIds, glitchChainId]

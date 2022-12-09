@@ -5,7 +5,7 @@ import web3Utils from 'web3-utils'
 import ethSwapGlitchABI from 'assets/jsons/eth_swap_glitch_abi.json'
 import { GLITCH_BRIDGE_CONTRACT_ADDRESS } from 'constants/index'
 
-export const useMinMaxAmount = (chainId: number) => {
+export const useMinMaxAmount = () => {
   const tokenAddress = GLITCH_BRIDGE_CONTRACT_ADDRESS
   const abi = ethSwapGlitchABI
 
@@ -13,14 +13,12 @@ export const useMinMaxAmount = (chainId: number) => {
     address: tokenAddress,
     abi,
     functionName: 'minAmount',
-    enabled: !!chainId,
   })
 
   const { data: maxAmount, isLoading: isMaxAmountLoading } = useContractRead({
     address: tokenAddress,
     abi,
     functionName: 'maxAmount',
-    enabled: !!chainId,
   })
 
   return {

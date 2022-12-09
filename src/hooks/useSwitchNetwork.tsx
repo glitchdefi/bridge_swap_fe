@@ -15,6 +15,8 @@ export const useSwitchNetwork = (): {
     if (error) {
       const message = error?.message?.includes('user rejected transaction')
         ? 'User rejected transaction'
+        : error?.message?.includes('Error switching chain')
+        ? 'Switching chain already pending on Metamask'
         : error?.message || 'An error occurred. Please try again'
 
       toast(<Toast type="error" message={message} />, {
