@@ -119,10 +119,7 @@ export function web3Enable(
               })
           })
           .catch((error): InjectedExtension[] => {
-            if (error?.message?.includes('Rejected')) {
-              return [{ name: GLITCH_EXTENSION_NAME, rejected: true }] as unknown as InjectedExtension[]
-            }
-            return []
+            throw error
           })
           .then((values): InjectedExtension[] => {
             // const names = values.map(({ name, version }): string => `${name}/${version}`)

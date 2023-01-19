@@ -4,6 +4,7 @@
 import type { SubjectInfo } from '@polkadot/ui-keyring/observable/types'
 
 import { useEffect, useState } from 'react'
+import isEmpty from 'lodash/isEmpty'
 
 import { keyring } from '@polkadot/ui-keyring'
 import { u8aToHex } from '@polkadot/util'
@@ -41,14 +42,24 @@ function extractAccounts(accounts: SubjectInfo = {}): UseAccounts {
 
 function useAccountsImpl(): UseAccounts {
   const mountedRef = useIsMountedRef()
-  const { setAccountSelected } = usePolkadotApi()
+  const { setAccountSelected, allAccounts } = usePolkadotApi()
   const [state, setState] = useState<UseAccounts>(EMPTY)
 
   useEffect((): (() => void) => {
     const subscription = keyring.accounts.subject.subscribe((accounts = {}) => {
       if (mountedRef.current) {
-        setState(extractAccounts(accounts))
-        setAccountSelected(accounts ? Object.keys(accounts)[0] : null)
+        const transformAccounts =
+          isEmpty(accounts) && allAccounts?.length
+            ? {
+                allAccounts,
+                allAccountsHex: [],
+                areAccountsLoaded: true,
+                hasAccounts: true,
+                isAccount: (address?: string | null) => !!address && allAccounts.includes(address),
+              }
+            : extractAccounts(accounts)
+        setState(transformAccounts)
+        setAccountSelected(transformAccounts.allAccounts?.[0])
       }
     })
 
@@ -56,7 +67,7 @@ function useAccountsImpl(): UseAccounts {
       setTimeout(() => subscription.unsubscribe(), 0)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mountedRef])
+  }, [mountedRef, allAccounts])
 
   return state
 }

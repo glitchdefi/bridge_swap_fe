@@ -47,6 +47,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
     formatted: { minAmount, maxAmount },
   } = useMinMaxAmount()
   const {
+    accountSelected,
     onConnect: onConnectGlitchWallet,
     isWalletConnected: isGlitchWalletConnected,
     isHasExtension: isHasGlitchExtension,
@@ -74,9 +75,10 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
       !transaction.toNetwork ||
       Number(estimatedReceived) <= 0 ||
       !isGlitchWalletConnected ||
-      !isHasGlitchExtension
+      !isHasGlitchExtension ||
+      !accountSelected
     )
-  }, [transaction, estimatedReceived, isGlitchWalletConnected, isHasGlitchExtension])
+  }, [transaction, estimatedReceived, isGlitchWalletConnected, isHasGlitchExtension, accountSelected])
 
   const showEstimatedFee = fee && !!transaction.amount.value && !!transaction.fromNetwork
 

@@ -8,7 +8,7 @@ import type { InjectedExtension } from '@polkadot/extension-inject/types'
 import type { ChainProperties, ChainType } from '@polkadot/types/interfaces'
 import { deriveMapCache, setDeriveCache } from '@polkadot/api-derive/util'
 import type { SubmittableExtrinsicFunction } from '@polkadot/api/promise/types'
-import { formatBalance, isTestChain, objectSpread, stringify } from '@polkadot/util'
+import { formatBalance, isTestChain, objectSpread } from '@polkadot/util'
 import { keyring } from '@polkadot/ui-keyring'
 import { toast } from 'react-toastify'
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults'
@@ -23,6 +23,7 @@ export type PolkadotContextApiTypes = {
   isApiInitialized: boolean
   isHasExtension: boolean
   isWalletConnected: boolean
+  allAccounts: string[]
   setAccountSelected: (account: string) => void
   onConnect: () => void
 }
@@ -58,6 +59,7 @@ export interface ApiState {
   systemChain: string
   systemName: string
   systemVersion: string
+  accounts: string[]
 }
 
 export interface Option {
@@ -190,8 +192,6 @@ async function loadOnReady(
   const isEthereum = ethereumChains.includes(api.runtimeVersion.specName.toString())
   const isDevelopment = systemChainType.isDevelopment || systemChainType.isLocal || isTestChain(systemChain)
 
-  console.log(`chain: ${systemChain} (${systemChainType.toString()}), ${stringify(properties)}`)
-
   // explicitly override the ss58Format as specified
   registry.setChainProperties(
     registry.createType('ChainProperties', { ss58Format, tokenDecimals, tokenSymbol }) as ChainProperties,
@@ -228,6 +228,7 @@ async function loadOnReady(
     apiDefaultTxSudo,
     chainSS58,
     hasInjectedAccounts: injectedAccounts.length !== 0,
+    accounts: injectedAccounts?.map((a) => a.address) || [],
     isApiReady: true,
     isDevelopment: isEthereum ? false : isDevelopment,
     isEthereum,
@@ -245,18 +246,27 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
   const [isWalletConnected, setIsWalletConnected] = useState<boolean>(false)
   // const [apiError, setApiError] = useState<null | string>(null)
   const [extensions, setExtensions] = useState<InjectedExtension[] | undefined>()
+  const [allAccounts, setAllAccounts] = useState<string[]>([])
 
   const [accountSelected, setAccountSelected] = useState<string>(null)
 
-  const onError = useCallback((error: unknown): void => {
-    toast.error((error as Error).message)
+  const onError = useCallback((error: unknown | Error): void => {
+    let message = ''
+
+    if ((error as Error)?.message === 'Rejected') {
+      message = 'Authorization denied'
+      localStorage.removeItem(GLITCH_WALLET_CONNECTED_KEY)
+    }
+
+    toast.error(message || (error as Error).message)
   }, [])
 
   const onConnectGlitchWallet = useCallback(() => {
     const injectedPromise = web3Enable(BRIDGE_ORIGIN_NAME)
     injectedPromise.then(setExtensions).catch(onError)
     loadOnReady(api, injectedPromise, undefined)
-      .then(() => {
+      .then(({ accounts }) => {
+        accounts.length && setAllAccounts(accounts)
         setIsWalletConnected(true)
         setIsApiInitialized(true)
         localStorage.setItem(GLITCH_WALLET_CONNECTED_KEY, 'true')
@@ -291,6 +301,7 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
         isApiInitialized,
         isWalletConnected,
         isHasExtension: !!extensions?.length,
+        allAccounts,
         onConnect: onConnectGlitchWallet,
       }}
     >
