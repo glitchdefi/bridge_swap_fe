@@ -31,7 +31,12 @@ export const SUPPORTED_NETWORK = [
   },
 ]
 
+export const DEFAULT_FROM_ADDRESS = '5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE'
+
 export const GLITCH_TESTNET_EXPLORER_URL = 'https://testnet-explorer.glitch.finance'
+
+export const BUSINESS_FEE = process.env.NEXT_PUBLIC_BUSINESS_FEE
+export const SUBSIDIZE_FLAG = process.env.NEXT_PUBLIC_SUBSIDIZE_FLAG
 
 // export const GLITCH_ETH_TOKEN_ADDRESS = '0x9F720F007b9d9169c4481CeaA2fA82fdfec0b21F'
 export const GLITCH_ETH_TOKEN_ADDRESS = '0x7428417089727238b4B3BA5933c77357Af9B56f5'

@@ -10,12 +10,13 @@ import { fromWei } from 'web3-utils'
 
 import loadingJson from 'assets/jsons/loading.json'
 
-import { useFetchEstimatedFee } from 'hooks/useFetchEstimatedFee'
 import { useTransfer } from 'hooks/useTransfer'
 
 import { SUPPORTED_NETWORK } from 'constants/index'
 import { Transaction } from 'types'
-import { subtract } from 'utils/numbers'
+
+import { calculateEstimatedReceived } from 'utils/calculateEstimatedReceived'
+import { calculateEstimatedFee } from 'utils/calculateEstimatedFee'
 
 import { Toast } from 'components/Toast'
 import { ArrowLeftIcon, HorizontalSwap } from 'components/Svg'
@@ -32,7 +33,6 @@ interface Props {
 export const StepTwo: React.FC<Props> = (props) => {
   const { onBack, onSuccess, initialTx } = props
   const { chain } = useNetwork()
-  const { fee, formattedFee } = useFetchEstimatedFee(chain?.id)
   const {
     onTransfer,
     allowanceRefetch,
@@ -44,7 +44,7 @@ export const StepTwo: React.FC<Props> = (props) => {
     transferData,
     transferProcess,
     isTransferSuccess,
-  } = useTransfer(initialTx, fee)
+  } = useTransfer(initialTx, initialTx.fee)
 
   const [showWaiting, setShowWaiting] = useState<boolean>(false)
   const [step, setStep] = useState<'approve' | 'transfer'>('approve')
@@ -133,8 +133,12 @@ export const StepTwo: React.FC<Props> = (props) => {
   }, [])
 
   const estimatedReceived = useMemo(
-    () => subtract(initialTx.amount.value, formattedFee),
-    [initialTx.amount.value, formattedFee],
+    () => calculateEstimatedReceived(initialTx.amount.value, initialTx.fee),
+    [initialTx.amount.value, initialTx.fee],
+  )
+  const estimatedFee = useMemo(
+    () => calculateEstimatedFee(initialTx.fee, initialTx.amount.value),
+    [initialTx.fee, initialTx.amount],
   )
 
   const _onTransfer = useCallback(async () => {
@@ -214,7 +218,7 @@ export const StepTwo: React.FC<Props> = (props) => {
         </Text>
       </div>
 
-      <EstimatedFeeView show fee={formattedFee} estimatedReceived={estimatedReceived} />
+      <EstimatedFeeView show fee={estimatedFee} estimatedReceived={estimatedReceived} />
 
       {showWaiting ? (
         <div className="flex items-center mt-6">

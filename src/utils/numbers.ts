@@ -1,4 +1,3 @@
-import { BigNumber } from 'ethers'
 import { fromWei, toBN, toWei } from 'web3-utils'
 
 export function numberWithCommas(n: string | number): string {
@@ -12,4 +11,20 @@ export const subtract = (n1: string, n2: string): string => {
   }
 
   return fromWei(toBN(toWei(n1)).sub(toBN(toWei(n2))))
+}
+
+export const add = (n1: string, n2: string): string => {
+  if (!n1 || !n2) {
+    return '0'
+  }
+
+  return fromWei(toBN(toWei(n1)).add(toBN(toWei(n2))))
+}
+
+export const mul = (n1: string, n2: string): string => {
+  if (!n1 || !n2) {
+    return '0'
+  }
+
+  return fromWei(toBN(toWei(n1)).mul(toBN(toWei(n2))))
 }

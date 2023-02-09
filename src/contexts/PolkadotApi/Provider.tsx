@@ -13,7 +13,8 @@ import { keyring } from '@polkadot/ui-keyring'
 import { toast } from 'react-toastify'
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults'
 import { KeyringStore } from '@polkadot/ui-keyring/types'
-import { GLITCH_WALLET_CONNECTED_KEY } from 'constants/index'
+import web3Utils from 'web3-utils'
+import { DEFAULT_FROM_ADDRESS, GLITCH_WALLET_CONNECTED_KEY } from 'constants/index'
 import registry from './typeRegistry'
 
 export type PolkadotContextApiTypes = {
@@ -25,6 +26,7 @@ export type PolkadotContextApiTypes = {
   isWalletConnected: boolean
   allAccounts: string[]
   setAccountSelected: (account: string) => void
+  getSubstrateEstimateFee: (toAddress: string, _amount: string) => Promise<string>
   onConnect: () => void
 }
 
@@ -289,7 +291,19 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
         })
       })
       .catch(onError)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
+
+  const getSubstrateEstimateFee = async (toAddress: string, _amount: string): Promise<string> => {
+    try {
+      const amount = web3Utils.toWei(_amount).toString()
+      const { partialFee } = await api.tx.balances.transfer(toAddress, amount).paymentInfo(DEFAULT_FROM_ADDRESS)
+
+      return web3Utils.fromWei(partialFee)
+    } catch (e) {
+      throw new Error((e as Error).message)
+    }
+  }
 
   return (
     <PolkadotApiContext.Provider
@@ -303,6 +317,7 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
         isHasExtension: !!extensions?.length,
         allAccounts,
         onConnect: onConnectGlitchWallet,
+        getSubstrateEstimateFee,
       }}
     >
       {children}

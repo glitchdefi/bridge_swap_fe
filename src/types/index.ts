@@ -7,6 +7,7 @@ export interface Transaction {
     value: string
     hasError: boolean
   }
+  fee: string
 }
 
 export interface TransactionReceipt {

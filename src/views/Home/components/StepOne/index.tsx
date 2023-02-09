@@ -1,24 +1,25 @@
 /* eslint-disable no-nested-ternary */
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { useAccount, useNetwork } from 'wagmi'
+import { useDebounce } from 'use-lodash-debounce'
 
 import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
 
 import { useMetamask } from 'hooks/useMetamask'
 import { useGlitchBalance } from 'hooks/useGlitchBalance'
-import { useFetchEstimatedFee } from 'hooks/useFetchEstimatedFee'
 import { useMinMaxAmount } from 'hooks/useMinMaxAmount'
 
-import { subtract } from 'utils/numbers'
 import { checkUnsupportedChain } from 'utils/checkUnsupportedChain'
 
 import { SUPPORTED_NETWORK } from 'constants/index'
 import { glitchChainId } from 'constants/supportedNetworks'
 import { Transaction } from 'types'
+import { calculateEstimatedReceived } from 'utils/calculateEstimatedReceived'
 
 // Components
 import { MetamaskNotDetectedModal } from 'components/Shared/MetamaskNotDetectedModal'
 import { PrimaryButton } from 'components/Button'
+import { calculateEstimatedFee } from 'utils/calculateEstimatedFee'
 import { AmountInput } from './AmountInput'
 import { BalanceView } from './BalanceView'
 import { SelectNetwork } from './SelectNetwork'
@@ -42,7 +43,6 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   const {
     data: { formattedBalance },
   } = useGlitchBalance()
-  const { fee, formattedFee } = useFetchEstimatedFee(chain?.id)
   const {
     formatted: { minAmount, maxAmount },
   } = useMinMaxAmount()
@@ -51,6 +51,7 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
     onConnect: onConnectGlitchWallet,
     isWalletConnected: isGlitchWalletConnected,
     isHasExtension: isHasGlitchExtension,
+    getSubstrateEstimateFee,
   } = usePolkadotApi()
 
   const [transaction, setTransaction] = useState<Transaction>({
@@ -60,12 +61,19 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
       value: '',
       hasError: false,
     },
+    fee: '',
   })
   const [isOpenMetamaskNotDetectedModal, setIsOpenMetamaskNotDetectedModal] = useState<boolean>(false)
+  const [isFetchingTxFee, setIsFetchingTxFee] = useState<boolean>(false)
+  const debouncedAmount = useDebounce(transaction.amount.value, 500)
 
-  const estimatedReceived = useMemo(
-    () => subtract(transaction.amount.value, formattedFee),
-    [transaction.amount.value, formattedFee],
+  const estimatedAmountReceived = useMemo(
+    () => calculateEstimatedReceived(transaction.amount.value, transaction.fee),
+    [transaction.amount.value, transaction.fee],
+  )
+  const estimatedFee = useMemo(
+    () => calculateEstimatedFee(transaction.fee, transaction.amount.value),
+    [transaction.fee, transaction.amount],
   )
   const isContinueDisabled = useMemo(() => {
     return (
@@ -73,14 +81,14 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
       transaction.amount.hasError ||
       !transaction.fromNetwork ||
       !transaction.toNetwork ||
-      Number(estimatedReceived) <= 0 ||
+      Number(estimatedAmountReceived) <= 0 ||
       !isGlitchWalletConnected ||
       !isHasGlitchExtension ||
       !accountSelected
     )
-  }, [transaction, estimatedReceived, isGlitchWalletConnected, isHasGlitchExtension, accountSelected])
+  }, [transaction, estimatedAmountReceived, isGlitchWalletConnected, isHasGlitchExtension, accountSelected])
 
-  const showEstimatedFee = fee && !!transaction.amount.value && !!transaction.fromNetwork
+  const showEstimatedFee = transaction.fee && !!transaction.amount.value && !!transaction.fromNetwork
 
   useEffect(() => {
     if (initialTx) setTransaction(initialTx)
@@ -92,6 +100,21 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [connectError])
+
+  useEffect(() => {
+    async function getFee() {
+      if (accountSelected && parseFloat(debouncedAmount) > 0) {
+        // setIsFetchingTxFee(true)
+        const fee = await getSubstrateEstimateFee(accountSelected, debouncedAmount)
+        setTransaction((prev) => ({ ...prev, fee }))
+      } else {
+        setTransaction((prev) => ({ ...prev, fee: '' }))
+      }
+      // setIsFetchingTxFee(false)
+    }
+    getFee()
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [debouncedAmount, accountSelected])
 
   const toggleMetamaskNotDetectedModal = useCallback(() => {
     setIsOpenMetamaskNotDetectedModal((prev) => !prev)
@@ -197,7 +220,12 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
         onConnectGlitchWallet={onConnectGlitchWallet}
       />
 
-      <EstimatedFeeView show={showEstimatedFee} fee={formattedFee} estimatedReceived={estimatedReceived} />
+      <EstimatedFeeView
+        loading={isFetchingTxFee}
+        show={showEstimatedFee}
+        fee={estimatedFee}
+        estimatedReceived={estimatedAmountReceived}
+      />
       {renderButton()}
 
       {/* Modals */}

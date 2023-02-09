@@ -66,6 +66,7 @@ const Home: React.FC = () => {
       value: '',
       hasError: false,
     },
+    fee: '',
   })
 
   const onToggleSwitchNetworkModal = useCallback(() => {
@@ -106,6 +107,7 @@ const Home: React.FC = () => {
                       value: '',
                       hasError: false,
                     },
+                    fee: '',
                   })
                   setStep(1)
                 }}
