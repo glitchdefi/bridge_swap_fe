@@ -34,6 +34,7 @@ export const SUPPORTED_NETWORK = [
 export const DEFAULT_FROM_ADDRESS = '5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE'
 
 export const GLITCH_TESTNET_EXPLORER_URL = 'https://testnet-explorer.glitch.finance'
+export const GLITCH_UAT_EXPLORER_URL = 'https://dev-explorer-v2.netlify.app'
 
 export const BUSINESS_FEE = process.env.NEXT_PUBLIC_BUSINESS_FEE
 export const SUBSIDIZE_FLAG = process.env.NEXT_PUBLIC_SUBSIDIZE_FLAG

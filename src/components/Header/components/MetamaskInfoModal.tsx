@@ -58,7 +58,7 @@ export const MetamaskInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
       <Modal.Content>
         <div>
           <div className="flex items-center p-4">
-            <img className="w-14 h-14 mr-4" src="./images/logo-metamask.png" alt="logo-metamask" />
+            <img className="mr-4 w-14 h-14" src="./images/logo-metamask.png" alt="logo-metamask" />
             <div>
               <Text className="mb-2 !text-color8 !font-semibold">Connected with Metamask</Text>
               <div className="flex items-center">
@@ -114,12 +114,12 @@ export const MetamaskInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
 
           <div className="p-4">
             <a
-              href={chain?.blockExplorers?.default?.url}
+              href={`${chain?.blockExplorers?.default?.url}/address/${address}`}
               className="flex items-center cursor-pointer"
               target="_blank"
               rel="noreferrer"
             >
-              <div className="text-link mr-2">
+              <div className="mr-2 text-link">
                 View on {NETWORK_DROPDOWN.bsc.value.includes(chain.id) ? 'BscScan' : 'Etherscan'}
               </div>
               <SelectOutlinedIcon width={16} height={16} />

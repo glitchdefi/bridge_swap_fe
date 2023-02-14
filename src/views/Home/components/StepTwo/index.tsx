@@ -11,6 +11,7 @@ import { fromWei } from 'web3-utils'
 import loadingJson from 'assets/jsons/loading.json'
 
 import { useTransfer } from 'hooks/useTransfer'
+import { useMinMaxAmount } from 'hooks/useMinMaxAmount'
 
 import { SUPPORTED_NETWORK } from 'constants/index'
 import { Transaction } from 'types'
@@ -45,12 +46,25 @@ export const StepTwo: React.FC<Props> = (props) => {
     transferProcess,
     isTransferSuccess,
   } = useTransfer(initialTx, initialTx.fee)
+  const { minAmountRefetch, maxAmountRefetch } = useMinMaxAmount()
 
+  /**
+   * state
+   */
   const [showWaiting, setShowWaiting] = useState<boolean>(false)
   const [step, setStep] = useState<'approve' | 'transfer'>('approve')
 
   const fromNetwork = SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.fromNetwork))
   const toNetwork = SUPPORTED_NETWORK.find((n) => n.chainIds.includes(initialTx?.toNetwork))
+
+  const estimatedReceived = useMemo(
+    () => calculateEstimatedReceived(initialTx.amount.value, initialTx.fee),
+    [initialTx.amount.value, initialTx.fee],
+  )
+  const estimatedFee = useMemo(
+    () => calculateEstimatedFee(initialTx.fee, initialTx.amount.value),
+    [initialTx.fee, initialTx.amount],
+  )
 
   useEffect(() => {
     const fetchAllowance = async () => {
@@ -123,8 +137,11 @@ export const StepTwo: React.FC<Props> = (props) => {
 
   const onShowError = useCallback((error: any) => {
     setShowWaiting(false)
+
     const message = error?.message?.includes('user rejected transaction')
       ? 'User rejected transaction'
+      : error?.message?.includes('burn amount exceeds')
+      ? 'Insufficient Balance'
       : error?.message || error || 'An error occurred. Please try again'
 
     toast(<Toast type="error" message={message} />, {
@@ -132,18 +149,27 @@ export const StepTwo: React.FC<Props> = (props) => {
     })
   }, [])
 
-  const estimatedReceived = useMemo(
-    () => calculateEstimatedReceived(initialTx.amount.value, initialTx.fee),
-    [initialTx.amount.value, initialTx.fee],
-  )
-  const estimatedFee = useMemo(
-    () => calculateEstimatedFee(initialTx.fee, initialTx.amount.value),
-    [initialTx.fee, initialTx.amount],
-  )
-
   const _onTransfer = useCallback(async () => {
     setShowWaiting(true)
     try {
+      // check amount with min and max amount -> in case min, max amount has change from contract
+      const minMaxResult = await Promise.all([minAmountRefetch(), maxAmountRefetch()])
+      if (minMaxResult?.length && !minMaxResult?.[0]?.isError && !minMaxResult?.[1]?.isError) {
+        const [minAmount, maxAmount] = minMaxResult
+        const transformMinAmount = Number(fromWei(minAmount.data.toString()))
+        const transformMaxAmount = Number(fromWei(maxAmount.data.toString()))
+
+        if (Number(initialTx.amount.value) < transformMinAmount) {
+          onShowError('Amount is less than min amount')
+          return
+        }
+
+        if (Number(initialTx.amount.value) > transformMaxAmount) {
+          onShowError('Amount is greater than max amount')
+          return
+        }
+      }
+
       const allowanceResult = await allowanceRefetch()
       const allowance = fromWei(allowanceResult.data.toString())
 
@@ -157,7 +183,7 @@ export const StepTwo: React.FC<Props> = (props) => {
     } catch (error) {
       onShowError(error)
     }
-  }, [onApprove, onShowError, allowanceRefetch, onTransfer, initialTx.amount])
+  }, [onApprove, onShowError, allowanceRefetch, onTransfer, initialTx.amount, minAmountRefetch, maxAmountRefetch])
 
   return (
     <div>
