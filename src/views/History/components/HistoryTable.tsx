@@ -1,7 +1,10 @@
 import { CheckCircleIcon } from 'components/Svg'
 import { Text } from 'components/Text'
-import React from 'react'
+import React, { useMemo } from 'react'
 import { styled, theme } from 'twin.macro'
+import { TransactionHistory } from 'types'
+import { truncateAddress } from 'utils/strings'
+import { AddressDropdownTypes } from './SelectWalletView'
 
 const StyledTable = styled.table`
   width: 100%;
@@ -25,7 +28,19 @@ const StyledTable = styled.table`
   }
 `
 
-export const HistoryTable: React.FC = () => {
+interface HistoryTableProps {
+  addressSelected: AddressDropdownTypes
+  data: TransactionHistory[]
+}
+
+export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
+  const { data, addressSelected } = props
+
+  const filterData = useMemo(() => {
+    if (!addressSelected?.value || !data?.length) return []
+    return data?.filter((o) => o.from === addressSelected.value || o.to === addressSelected.value)
+  }, [addressSelected?.value, data])
+
   return (
     <StyledTable className="table-auto">
       <thead>
@@ -38,160 +53,50 @@ export const HistoryTable: React.FC = () => {
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-eth.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Ethereum</Text>
-                <Text color={theme`colors.primary`}>0xc059...03d9</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-bnb.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Binance Smart Chain</Text>
-                <Text color={theme`colors.primary`}>0x9a8d...ad52</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="p-4">
-              <Text color={theme`colors.color9`}>12 Jul, 2021</Text>
-              <Text fontSize="12px" color={theme`colors.color6`}>
-                04:17:56 GMT
-              </Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-end p-4">
-              <Text color={theme`colors.color9`}>100.0000 GLCH</Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-center p-4">
-              <CheckCircleIcon />
-            </div>
-          </td>
-        </tr>
-
-        <tr>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-eth.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Ethereum</Text>
-                <Text color={theme`colors.primary`}>0xc059...03d9</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-bnb.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Binance Smart Chain</Text>
-                <Text color={theme`colors.primary`}>0x9a8d...ad52</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="p-4">
-              <Text color={theme`colors.color9`}>12 Jul, 2021</Text>
-              <Text fontSize="12px" color={theme`colors.color6`}>
-                04:17:56 GMT
-              </Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-end p-4">
-              <Text color={theme`colors.color9`}>100.0000 GLCH</Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-center p-4">
-              <CheckCircleIcon />
-            </div>
-          </td>
-        </tr>
-
-        <tr>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-eth.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Ethereum</Text>
-                <Text color={theme`colors.primary`}>0xc059...03d9</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-bnb.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Binance Smart Chain</Text>
-                <Text color={theme`colors.primary`}>0x9a8d...ad52</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="p-4">
-              <Text color={theme`colors.color9`}>12 Jul, 2021</Text>
-              <Text fontSize="12px" color={theme`colors.color6`}>
-                04:17:56 GMT
-              </Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-end p-4">
-              <Text color={theme`colors.color9`}>100.0000 GLCH</Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-center p-4">
-              <CheckCircleIcon />
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-eth.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Ethereum</Text>
-                <Text color={theme`colors.primary`}>0xc059...03d9</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="flex items-start p-4">
-              <img className="w-5 h-5 mr-2 mt-1" src="./images/logo-bnb.png" alt="logo" />
-              <div>
-                <Text color={theme`colors.color9`}>Binance Smart Chain</Text>
-                <Text color={theme`colors.primary`}>0x9a8d...ad52</Text>
-              </div>
-            </div>
-          </td>
-          <td>
-            <div className="p-4">
-              <Text color={theme`colors.color9`}>12 Jul, 2021</Text>
-              <Text fontSize="12px" color={theme`colors.color6`}>
-                04:17:56 GMT
-              </Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-end p-4">
-              <Text color={theme`colors.color9`}>100.0000 GLCH</Text>
-            </div>
-          </td>
-          <td>
-            <div className="flex justify-center p-4">
-              <CheckCircleIcon />
-            </div>
-          </td>
-        </tr>
+        {filterData.map((t: TransactionHistory, i: number) => {
+          const { from, to, amount } = t
+          return (
+            <tr key={`${i}`}>
+              <td>
+                <div className="flex items-start p-4">
+                  <img className="w-5 h-5 mt-1 mr-2" src="./images/logo-eth.png" alt="logo" />
+                  <div>
+                    <Text color={theme`colors.color9`}>Ethereum</Text>
+                    <Text color={theme`colors.primary`}>{truncateAddress(from)}</Text>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div className="flex items-start p-4">
+                  <img className="w-5 h-5 mt-1 mr-2" src="./images/logo.png" alt="logo" />
+                  <div>
+                    <Text color={theme`colors.color9`}>Glitch</Text>
+                    <Text color={theme`colors.primary`}>{truncateAddress(to)}</Text>
+                  </div>
+                </div>
+              </td>
+              <td>
+                <div className="p-4">
+                  <Text color={theme`colors.color9`}>-</Text>
+                  {/* <Text color={theme`colors.color9`}>12 Jul, 2021</Text>
+                  <Text fontSize="12px" color={theme`colors.color6`}>
+                    04:17:56 GMT
+                  </Text> */}
+                </div>
+              </td>
+              <td>
+                <div className="flex justify-end p-4">
+                  <Text color={theme`colors.color9`}>{amount} GLCH</Text>
+                </div>
+              </td>
+              <td>
+                <div className="flex justify-center p-4">
+                  <CheckCircleIcon />
+                </div>
+              </td>
+            </tr>
+          )
+        })}
       </tbody>
     </StyledTable>
   )

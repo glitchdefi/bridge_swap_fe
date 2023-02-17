@@ -1,11 +1,10 @@
 import React from 'react'
-import styled from 'styled-components'
-import { colors } from 'styles/Colors'
+import { styled, theme } from 'twin.macro'
 
 const StyledSpin = styled.div<Props>`
   width: ${({ size }) => (size ? `${size}px` : '32px')};
   height: ${({ size }) => (size ? `${size}px` : '32px')};
-  border: 3px solid ${({ color }) => color || colors.white};
+  border: 3px solid ${({ color }) => color || theme`colors.primary`};
   border-bottom-color: transparent;
   border-radius: 50%;
   display: inline-block;

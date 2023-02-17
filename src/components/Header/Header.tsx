@@ -18,6 +18,7 @@ import { AccountInfo } from './components/AccountInfo'
 import { MetamaskInfoModal } from './components/MetamaskInfoModal'
 import { GlitchInfoModal } from './components/GlitchInfoModal'
 import { MetamaskNotDetectedModal } from '../Shared/MetamaskNotDetectedModal'
+import { HistoryBox } from './components/HistoryBox'
 
 const Wrapper = styled.div`
   display: flex;
@@ -95,14 +96,14 @@ const Header: React.FC = () => {
               <AccountInfo glitchAccounts={[]} onClick={toggleOpenMetamaskInfoModal} />
             </div>
           ) : (
-            <div className="hidden lg:block mr-4">
+            <div className="hidden mr-4 lg:block">
               <OutlineButton className="!py-1" onClick={() => onConnect()}>
                 <img src="./images/logo-metamask.png" alt="metamask-logo" />
                 <span>Connect with Metamask</span>
               </OutlineButton>
             </div>
           )}
-          {/* <HistoryBox /> */}
+          <HistoryBox />
         </div>
 
         <div className="cursor-pointer lg:hidden">

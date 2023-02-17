@@ -1,11 +1,19 @@
-import React from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useRouter } from 'next/router'
 import { styled, theme } from 'twin.macro'
+
+// Hooks
+import { useAccounts as useGlitchAccounts } from 'hooks/substrate/useAccounts'
+import { useAddress } from 'hooks/useAddress'
+import { useTransactionHistory } from 'hooks/useTransactionHistory'
+
+import { truncateAddress } from 'utils/strings'
 
 // Components
 import { Text } from 'components/Text'
 import { ArrowLeftIcon } from 'components/Svg'
-import { SelectWalletView } from './components/SelectWalletView'
+import { Spin } from 'components/Loader'
+import { AddressDropdownTypes, SelectWalletView } from './components/SelectWalletView'
 import { HistoryTable } from './components/HistoryTable'
 
 const Wrapper = styled.div`
@@ -36,6 +44,33 @@ const CardContent = styled.div`
 
 export const History: React.FC = () => {
   const router = useRouter()
+  const { isLoading, historyTransactions } = useTransactionHistory()
+  const { address } = useAddress()
+  const { allAccounts } = useGlitchAccounts()
+
+  const [addressSelected, setAddressSelected] = useState<AddressDropdownTypes | null>()
+
+  const isShowSelectWallet = address || allAccounts?.length
+
+  const combineAddresses = useMemo(() => {
+    if (isShowSelectWallet) {
+      return [address, ...allAccounts].map((addr) => ({
+        label: truncateAddress(addr),
+        value: addr,
+        isEthAddress: addr?.startsWith('0x'),
+      }))
+    }
+
+    return []
+  }, [isShowSelectWallet, address, allAccounts])
+
+  useEffect(() => {
+    if (combineAddresses?.length && !addressSelected) {
+      setAddressSelected(combineAddresses[0])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [combineAddresses])
+
   return (
     <Wrapper>
       <Card>
@@ -48,10 +83,22 @@ export const History: React.FC = () => {
           </Text>
         </CardHeader>
         <CardContent>
-          <div className="mb-4">
-            <SelectWalletView />
-          </div>
-          <HistoryTable />
+          {isShowSelectWallet && (
+            <div tw="mb-4">
+              <SelectWalletView
+                addressSelected={addressSelected}
+                setAddressSelected={setAddressSelected}
+                data={combineAddresses}
+              />
+            </div>
+          )}
+          {isLoading ? (
+            <div tw="flex items-center justify-center h-full w-full">
+              <Spin />
+            </div>
+          ) : (
+            <HistoryTable addressSelected={addressSelected} data={historyTransactions} />
+          )}
         </CardContent>
       </Card>
     </Wrapper>

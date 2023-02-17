@@ -1,9 +1,9 @@
 import React from 'react'
 import { styled, theme } from 'twin.macro'
+import { useRouter } from 'next/router'
 
 import { HistoryOutline } from 'components/Svg'
 import { Text } from 'components/Text'
-import { useRouter } from 'next/router'
 
 const Wrapper = styled.div`
   display: flex;

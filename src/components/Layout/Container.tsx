@@ -28,6 +28,8 @@ const StyledWrapper = styled.div`
   margin: 0px auto;
   min-height: 100vh;
   height: 100%;
+  display: flex;
+  flex-direction: column;
 
   padding-left: 16px;
   padding-right: 16px;

@@ -19,13 +19,6 @@ const Wrapper = styled.div`
     height: 60px;
     margin-bottom: 16px;
   }
-
-  ${media.md`
-    position: absolute;
-    bottom: 0px;
-    right: 0px;
-    left: 0px;
-  `}
 `
 
 const Footer: React.FC = () => {

@@ -46,6 +46,13 @@ export interface Log {
   logIndex: number
 }
 
+export type TransactionHistory = {
+  from: string
+  to: string
+  amount: string
+  time: string
+}
+
 export interface TransferError {
   cause?: unknown
 }

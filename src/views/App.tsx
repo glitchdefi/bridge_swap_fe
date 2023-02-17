@@ -2,6 +2,7 @@ import React, { Fragment } from 'react'
 import type { AppProps } from 'next/app'
 import { NextPage } from 'next'
 import Lottie from 'lottie-react'
+import 'twin.macro'
 
 import loadingJson from 'assets/jsons/loading.json'
 
@@ -37,7 +38,9 @@ const App = ({ Component, pageProps }: AppPropsWithLayout) => {
         ) : (
           <>
             <Header />
-            <Component {...pageProps} />
+            <div tw="flex-1">
+              <Component {...pageProps} />
+            </div>
             <Footer />
           </>
         )}

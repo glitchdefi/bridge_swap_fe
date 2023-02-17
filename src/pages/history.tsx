@@ -1,6 +1,7 @@
 import type { NextPage } from 'next'
+import dynamic from 'next/dynamic'
 
-import { History } from 'views/History'
+const History = dynamic<unknown>(() => import('views/History').then((comp) => comp.History), { ssr: false })
 
 const Index: NextPage = (props) => {
   return <History {...props} />

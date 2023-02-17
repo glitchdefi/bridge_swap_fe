@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { styled, theme } from 'twin.macro'
 
 // Components
@@ -17,8 +17,22 @@ const Wrapper = styled.div`
   }
 `
 
-export const SelectWalletView: React.FC = () => {
+export type AddressDropdownTypes = { value: string; label: string; isEthAddress: boolean }
+
+interface SelectWalletViewProps {
+  addressSelected: AddressDropdownTypes
+  setAddressSelected: (addr: AddressDropdownTypes) => void
+  data: AddressDropdownTypes[]
+}
+
+export const SelectWalletView: React.FC<SelectWalletViewProps> = (props) => {
+  const { data, addressSelected, setAddressSelected } = props
+
   const [isOpen, setIsOpen] = useState<boolean>(false)
+
+  const toggleDropdown = useCallback(() => {
+    setIsOpen((prev: boolean) => !prev)
+  }, [])
 
   return (
     <Wrapper className="flex items-center">
@@ -29,30 +43,44 @@ export const SelectWalletView: React.FC = () => {
         width={220}
         isOpen={isOpen}
         button={
-          <div
-            role="button"
-            tabIndex={0}
-            className="flex items-center select-network-btn"
-            onClick={() => setIsOpen((prev) => !prev)}
-          >
-            <img className="w-5 h-5" src="./images/logo-metamask.png" alt="logo-metamask" />
-            <Text className="mx-2">0xc059...03d9</Text>
+          <div role="button" tabIndex={0} className="flex items-center select-network-btn" onClick={toggleDropdown}>
+            <img
+              className="w-5 h-5"
+              src={addressSelected?.isEthAddress ? './images/logo-metamask.png' : './images/logo.png'}
+              alt="logo"
+            />
+            <Text className="mx-2">{addressSelected?.label}</Text>
             <OutlineDownArrow width={12} height={12} />
           </div>
         }
+        onClose={() => setIsOpen(false)}
       >
         <div>
-          <div className="flex items-center justify-between p-4 cursor-pointer border-b border-color4">
-            <div className="flex items-center">
-              <img className="mr-3 w-5 h-5" src="./images/logo-metamask.png" alt="logo-metamask" />
-              <Text color={theme`colors.primary`}>0xc059...03d9</Text>
-            </div>
-            <CheckIcon width={16} height={16} color={theme`colors.primary`} />
-          </div>
-          <div className="flex items-center p-4 cursor-pointer">
-            <img className="mr-3 w-5 h-5" src="./images/logo.png" alt="logo-glch" />
-            <Text>0xc059...03d9</Text>
-          </div>
+          {data?.map((o) => {
+            const isSelected = addressSelected?.value === o.value
+            return (
+              <div
+                key={o.value}
+                role="button"
+                tabIndex={0}
+                className="flex items-center justify-between p-4 border-b cursor-pointer border-color4"
+                onClick={() => {
+                  setAddressSelected(o)
+                  toggleDropdown()
+                }}
+              >
+                <div className="flex items-center">
+                  <img
+                    className="w-5 h-5 mr-3"
+                    src={o.isEthAddress ? './images/logo-metamask.png' : './images/logo.png'}
+                    alt="logo"
+                  />
+                  <Text color={isSelected ? theme`colors.primary` : theme`colors.color9`}>{o.label}</Text>
+                </div>
+                {isSelected && <CheckIcon width={16} height={16} color={theme`colors.primary`} />}
+              </div>
+            )
+          })}
         </div>
       </Dropdown>
     </Wrapper>
