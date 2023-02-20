@@ -1,4 +1,3 @@
-import { SUBSIDIZE_FLAG } from 'constants/index'
 import { subtract } from './numbers'
 import { calculateEstimatedFee } from './calculateEstimatedFee'
 
