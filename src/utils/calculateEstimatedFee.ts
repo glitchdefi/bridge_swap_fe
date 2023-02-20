@@ -4,7 +4,7 @@ import { add, subtract } from './numbers'
 export const calculateEstimatedFee = (txFee: string, amount: string): string => {
   if (!txFee || !amount) return ''
 
-  if (SUBSIDIZE_FLAG === 'true') {
+  if (SUBSIDIZE_FLAG === 'false') {
     return txFee
   }
 

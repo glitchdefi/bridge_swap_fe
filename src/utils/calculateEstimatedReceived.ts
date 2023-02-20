@@ -3,7 +3,7 @@ import { subtract } from './numbers'
 import { calculateEstimatedFee } from './calculateEstimatedFee'
 
 export const calculateEstimatedReceived = (amount: string, txFee: string): string => {
-  if (SUBSIDIZE_FLAG === 'true') {
+  if (SUBSIDIZE_FLAG === 'false') {
     return subtract(amount, txFee)
   }
 
