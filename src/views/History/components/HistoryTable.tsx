@@ -1,9 +1,13 @@
-import { CheckCircleIcon } from 'components/Svg'
-import { Text } from 'components/Text'
 import React, { useMemo } from 'react'
 import { styled, theme } from 'twin.macro'
+import { useNetwork } from 'wagmi'
+import { Tooltip } from 'react-tooltip'
+
 import { TransactionHistory } from 'types'
 import { truncateAddress } from 'utils/strings'
+
+import { CheckCircleIcon } from 'components/Svg'
+import { Text } from 'components/Text'
 import { AddressDropdownTypes } from './SelectWalletView'
 
 const StyledTable = styled.table`
@@ -26,6 +30,10 @@ const StyledTable = styled.table`
   tbody tr {
     box-shadow: inset 0px -1px 0px #23353b;
   }
+
+  a:hover {
+    text-decoration: underline;
+  }
 `
 
 interface HistoryTableProps {
@@ -36,6 +44,8 @@ interface HistoryTableProps {
 export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
   const { data, addressSelected } = props
 
+  const { chain } = useNetwork()
+
   const filterData = useMemo(() => {
     if (!addressSelected?.value || !data?.length) return []
     return data?.filter((o) => o.from === addressSelected.value || o.to === addressSelected.value)
@@ -45,24 +55,40 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
     <StyledTable className="table-auto">
       <thead>
         <tr>
+          <th className="text-left">Tx hash</th>
           <th className="text-left">From (network)</th>
           <th className="text-left">To (network)</th>
-          <th className="text-left">Time</th>
           <th className="text-end">Amount</th>
           <th className="text-center">Status</th>
         </tr>
       </thead>
       <tbody>
         {filterData.map((t: TransactionHistory, i: number) => {
-          const { from, to, amount } = t
+          const { hash, from, to, amount } = t
           return (
             <tr key={`${i}`}>
+              <td>
+                <div className="flex items-start p-4">
+                  <Text
+                    as="a"
+                    target="_blank"
+                    href={`${chain?.blockExplorers?.default?.url}/tx/${hash}`}
+                    color={theme`colors.primary`}
+                    data-tooltip-id="tx-hash"
+                    data-tooltip-content={hash}
+                  >
+                    {truncateAddress(hash)}
+                  </Text>
+                </div>
+              </td>
               <td>
                 <div className="flex items-start p-4">
                   <img className="w-5 h-5 mt-1 mr-2" src="./images/logo-eth.png" alt="logo" />
                   <div>
                     <Text color={theme`colors.color9`}>Ethereum</Text>
-                    <Text color={theme`colors.primary`}>{truncateAddress(from)}</Text>
+                    <Text data-tooltip-id="tx-from" data-tooltip-content={from} color={theme`colors.primary`}>
+                      {truncateAddress(from)}
+                    </Text>
                   </div>
                 </div>
               </td>
@@ -71,17 +97,15 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                   <img className="w-5 h-5 mt-1 mr-2" src="./images/logo.png" alt="logo" />
                   <div>
                     <Text color={theme`colors.color9`}>Glitch</Text>
-                    <Text color={theme`colors.primary`}>{truncateAddress(to)}</Text>
+                    <Text
+                      data-tooltip-id="tx-to"
+                      data-tooltip-content={to}
+                      className="to-link"
+                      color={theme`colors.primary`}
+                    >
+                      {truncateAddress(to)}
+                    </Text>
                   </div>
-                </div>
-              </td>
-              <td>
-                <div className="p-4">
-                  <Text color={theme`colors.color9`}>-</Text>
-                  {/* <Text color={theme`colors.color9`}>12 Jul, 2021</Text>
-                  <Text fontSize="12px" color={theme`colors.color6`}>
-                    04:17:56 GMT
-                  </Text> */}
                 </div>
               </td>
               <td>
@@ -94,6 +118,9 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                   <CheckCircleIcon />
                 </div>
               </td>
+              <Tooltip id="tx-hash" />
+              <Tooltip id="tx-from" />
+              <Tooltip id="tx-to" />
             </tr>
           )
         })}

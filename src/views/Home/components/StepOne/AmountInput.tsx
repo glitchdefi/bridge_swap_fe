@@ -99,9 +99,9 @@ export const AmountInput: React.FC<Props> = (props) => {
   )
 
   const onMaxClick = useCallback(() => {
-    setHasError({ min: false, max: false, insufficientBalance: false })
-    onChange(balance, false)
-  }, [balance, onChange])
+    const event = { target: { value: balance } }
+    onAmountChange(event)
+  }, [onAmountChange, balance])
 
   return (
     <>

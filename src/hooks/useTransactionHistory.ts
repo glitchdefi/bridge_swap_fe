@@ -20,6 +20,7 @@ export const useTransactionHistory = () => {
     const transformEvents = events.map((event) => {
       const [from, to, amount] = event.args
       return {
+        hash: event?.transactionHash,
         from: from?.trim(),
         to: to?.trim(),
         amount: web3Utils.fromWei(amount?.toString()),

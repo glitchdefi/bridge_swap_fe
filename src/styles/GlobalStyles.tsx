@@ -62,6 +62,8 @@ export const GlobalStyles = createGlobalStyle`
     var(--color-primary),
     var(--color-secondary)
   );
+
+  --rt-color-dark: var(--color-4);
 }
 
   html {

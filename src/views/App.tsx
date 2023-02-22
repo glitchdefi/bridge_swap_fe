@@ -3,6 +3,7 @@ import type { AppProps } from 'next/app'
 import { NextPage } from 'next'
 import Lottie from 'lottie-react'
 import 'twin.macro'
+import 'react-tooltip/dist/react-tooltip.css'
 
 import loadingJson from 'assets/jsons/loading.json'
 

@@ -47,6 +47,7 @@ export interface Log {
 }
 
 export type TransactionHistory = {
+  hash: string
   from: string
   to: string
   amount: string
