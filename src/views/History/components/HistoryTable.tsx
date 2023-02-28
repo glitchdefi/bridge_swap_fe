@@ -72,6 +72,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                   <Text
                     as="a"
                     target="_blank"
+                    rel="noreferrer"
                     href={`${chain?.blockExplorers?.default?.url}/tx/${hash}`}
                     color={theme`colors.primary`}
                     data-tooltip-id="tx-hash"

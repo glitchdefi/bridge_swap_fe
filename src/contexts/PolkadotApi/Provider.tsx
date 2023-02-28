@@ -265,7 +265,13 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
 
   const onConnectGlitchWallet = useCallback(() => {
     const injectedPromise = web3Enable(BRIDGE_ORIGIN_NAME)
-    injectedPromise.then(setExtensions).catch(onError)
+    injectedPromise
+      .then(async (e) => {
+        setExtensions(e)
+        // const metadata = await e[0].accounts.get()
+        // console.log(metadata)
+      })
+      .catch(onError)
     loadOnReady(api, injectedPromise, undefined)
       .then(({ accounts }) => {
         accounts.length && setAllAccounts(accounts)
@@ -282,6 +288,7 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
         api.on('connected', () => setIsApiConnected(true))
         api.on('disconnected', () => setIsApiConnected(false))
         api.on('ready', () => {
+          console.log(api.genesisHash.toHuman())
           const isGlitchWalletConnected = localStorage.getItem(GLITCH_WALLET_CONNECTED_KEY) === 'true'
           if (isGlitchWalletConnected) {
             onConnectGlitchWallet()
