@@ -15,6 +15,8 @@ import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defau
 import { KeyringStore } from '@polkadot/ui-keyring/types'
 import web3Utils from 'web3-utils'
 import { DEFAULT_FROM_ADDRESS, GLITCH_WALLET_CONNECTED_KEY } from 'constants/index'
+import { Text } from 'components/Text'
+import { theme } from 'twin.macro'
 import registry from './typeRegistry'
 
 export type PolkadotContextApiTypes = {
@@ -141,6 +143,10 @@ async function getInjectedAccounts(injectedPromise: Promise<InjectedExtension[]>
 
     const accounts = await web3Accounts()
 
+    if (accounts?.length && accounts[0].meta.genesisHash !== api.genesisHash.toHex()) {
+      throw new Error('Wrong network')
+    }
+
     return accounts.map(
       ({ address, meta }, whenCreated): InjectedAccountExt => ({
         address,
@@ -150,7 +156,14 @@ async function getInjectedAccounts(injectedPromise: Promise<InjectedExtension[]>
       }),
     )
   } catch (error) {
-    console.error('web3Accounts', error)
+    toast.error(
+      <div>
+        <Text large bold mb="6px" color={theme`colors.fail`}>
+          Please switch network
+        </Text>
+        <Text>Please switch to Testnet/Mainnet of Glitch blockchain in Glitch wallet</Text>
+      </div>,
+    )
     return []
   }
 }
@@ -265,13 +278,7 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
 
   const onConnectGlitchWallet = useCallback(() => {
     const injectedPromise = web3Enable(BRIDGE_ORIGIN_NAME)
-    injectedPromise
-      .then(async (e) => {
-        setExtensions(e)
-        // const metadata = await e[0].accounts.get()
-        // console.log(metadata)
-      })
-      .catch(onError)
+    injectedPromise.then(setExtensions).catch(onError)
     loadOnReady(api, injectedPromise, undefined)
       .then(({ accounts }) => {
         accounts.length && setAllAccounts(accounts)
