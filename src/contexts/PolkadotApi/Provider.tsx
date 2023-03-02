@@ -161,7 +161,7 @@ async function getInjectedAccounts(injectedPromise: Promise<InjectedExtension[]>
         <Text large bold mb="6px" color={theme`colors.fail`}>
           Please switch network
         </Text>
-        <Text>Please switch to Testnet/Mainnet of Glitch blockchain in Glitch wallet</Text>
+        <Text>Please switch to Mainnet of Glitch blockchain in Glitch wallet</Text>
       </div>,
     )
     return []
