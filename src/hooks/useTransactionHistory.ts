@@ -17,17 +17,20 @@ export const useTransactionHistory = () => {
     const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
     const bridgeContract = new ethers.Contract(GLITCH_BRIDGE_CONTRACT_ADDRESS, ethSwapToGlitchABI, provider)
     const events = await bridgeContract.queryFilter('TransferToGlitch', INITIAL_BLOCK, 'latest')
-    const transformEvents = events.map((event) => {
+    const transformEventsPromises = events.map(async (event) => {
       const [from, to, amount] = event.args
+      const block = await event.getBlock()
       return {
         hash: event?.transactionHash,
         from: from?.trim(),
         to: to?.trim(),
         amount: web3Utils.fromWei(amount?.toString()),
-        time: '',
+        time: block?.timestamp,
       }
     })
-    setHistoryTransactions(transformEvents)
+
+    const historyTransactions = await Promise.all(transformEventsPromises)
+    setHistoryTransactions(historyTransactions.sort((a, b) => b.time - a.time) as unknown as TransactionHistory[])
     setIsLoading(false)
   }, [])
 
