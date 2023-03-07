@@ -22,7 +22,7 @@ export const EstimatedFeeView: React.FC<Props> = (props) => {
         {loading ? (
           <Spin size={16} color={theme`colors.primary`} />
         ) : (
-          <Text color={theme`colors.color8`}>{fee && show ? fee : '--'}</Text>
+          <Text color={theme`colors.color8`}>{fee && show ? Number(fee)?.toFixed(6) : '--'}</Text>
         )}
       </div>
 
@@ -35,7 +35,7 @@ export const EstimatedFeeView: React.FC<Props> = (props) => {
         ) : estimatedReceived && show ? (
           <div className="flex items-center">
             <img className="w-6 h-6 mr-2" src="./images/logo.png" alt="glitch-logo" />
-            <Text color={theme`colors.success`}>{estimatedReceived}</Text>
+            <Text color={theme`colors.success`}>{Number(estimatedReceived)?.toFixed(6)}</Text>
           </div>
         ) : (
           <Text color={theme`colors.color8`}>--</Text>
