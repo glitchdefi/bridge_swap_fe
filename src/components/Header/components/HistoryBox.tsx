@@ -14,7 +14,7 @@ const Wrapper = styled.div`
   padding-left: 12px;
   padding-right: 12px;
   border: 1px solid ${theme`colors.color1`};
-  max-height: 32px;
+  min-height: 37px;
   cursor: pointer;
 `
 

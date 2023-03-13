@@ -17,7 +17,7 @@ import { NETWORK_DROPDOWN } from 'constants/index'
 const AccountInfoWrapper = styled.div`
   display: flex;
   align-items: center;
-  max-height: 32px;
+  min-height: 37px;
   padding-top: 5px;
   padding-bottom: 5px;
   padding-left: 12px;

@@ -14,6 +14,7 @@ import { HamburgerIcon } from 'components/Svg'
 import { OutlineButton } from 'components/Button'
 // import { ThemeToggle } from './components/ThemeToggle'
 // import { HistoryBox } from './components/HistoryBox'
+import { Tooltip } from 'react-tooltip'
 import { AccountInfo } from './components/AccountInfo'
 import { MetamaskInfoModal } from './components/MetamaskInfoModal'
 import { GlitchInfoModal } from './components/GlitchInfoModal'
@@ -31,6 +32,23 @@ const Wrapper = styled.div`
   .header-logo {
     max-width: 125px;
     height: 60px;
+  }
+
+  button {
+    min-height: 36px;
+  }
+
+  .cross-chain-swap {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 36px;
+    > img {
+      width: 100px;
+      height: auto;
+      object-fit: contain;
+      margin-right: 0px;
+    }
   }
 `
 
@@ -83,20 +101,33 @@ const Header: React.FC = () => {
       </div>
 
       <div className="flex items-center">
-        <div className="hidden lg:flex lg:items-center">
+        <div className="hidden gap-4 lg:flex lg:items-center">
+          <OutlineButton
+            as="a"
+            href="https://app.thevoyager.io"
+            target="_blank"
+            rel="noreferrer"
+            className="!py-1 cross-chain-swap"
+            data-tooltip-id="cross-chain-swap__tooltip"
+            data-tooltip-content="Cross chain swap"
+          >
+            <img src="./images/voyager_logo.svg" alt="voyager-logo" />
+          </OutlineButton>
+          <Tooltip id="cross-chain-swap__tooltip" />
+
           {!areAccountsLoaded ? (
-            <div className="mr-4 text-primary">Loading Glitch accounts ...</div>
+            <div className="text-primary">Loading Glitch accounts ...</div>
           ) : hasAccounts ? (
-            <div className="mr-4">
+            <div>
               <AccountInfo isGlitchNetwork glitchAccounts={allAccounts} onClick={toggleOpenGlitchInfoModal} />
             </div>
           ) : null}
           {isMetamaskConnected ? (
-            <div className="mr-4">
+            <div>
               <AccountInfo glitchAccounts={[]} onClick={toggleOpenMetamaskInfoModal} />
             </div>
           ) : (
-            <div className="hidden mr-4 lg:block">
+            <div className="hidden lg:block">
               <OutlineButton className="!py-1" onClick={() => onConnect()}>
                 <img src="./images/logo-metamask.png" alt="metamask-logo" />
                 <span>Connect with Metamask</span>
