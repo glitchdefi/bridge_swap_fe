@@ -20,6 +20,7 @@ import { MetamaskInfoModal } from './components/MetamaskInfoModal'
 import { GlitchInfoModal } from './components/GlitchInfoModal'
 import { MetamaskNotDetectedModal } from '../Shared/MetamaskNotDetectedModal'
 import { HistoryBox } from './components/HistoryBox'
+import { VoyagerModal } from './components/VoyagerModal'
 
 const Wrapper = styled.div`
   display: flex;
@@ -63,6 +64,7 @@ const Header: React.FC = () => {
   const [isOpenMetamaskInfoModal, setIsOpenMetamaskInfoModal] = useState<boolean>(false)
   const [isOpenGlitchInfoModal, setIsOpenGlitchInfoModal] = useState<boolean>(false)
   const [isOpenMetamaskNotDetectedModal, setIsOpenMetamaskNotDetectedModal] = useState<boolean>(false)
+  const [isOpenVoyagerModal, setIsOpenVoyagerModal] = useState<boolean>(false)
 
   useEffect(() => {
     if (isMetamaskConnected && !isEthereumChain(chain.id)) {
@@ -94,6 +96,10 @@ const Header: React.FC = () => {
     setIsOpenMetamaskNotDetectedModal((prev) => !prev)
   }, [])
 
+  const toggleVoyagerModal = useCallback(() => {
+    setIsOpenVoyagerModal((prev) => !prev)
+  }, [])
+
   return (
     <Wrapper>
       <div role="button" tabIndex={0} className="cursor-pointer" onClick={goToHome}>
@@ -103,13 +109,10 @@ const Header: React.FC = () => {
       <div className="flex items-center">
         <div className="hidden gap-4 lg:flex lg:items-center">
           <OutlineButton
-            as="a"
-            href="https://app.thevoyager.io"
-            target="_blank"
-            rel="noreferrer"
             className="!py-1 cross-chain-swap"
             data-tooltip-id="cross-chain-swap__tooltip"
             data-tooltip-content="Cross chain swap"
+            onClick={toggleVoyagerModal}
           >
             <img src="./images/voyager_logo.svg" alt="voyager-logo" />
           </OutlineButton>
@@ -150,6 +153,7 @@ const Header: React.FC = () => {
       )}
       <GlitchInfoModal isOpen={isOpenGlitchInfoModal} onClose={toggleOpenGlitchInfoModal} />
       <MetamaskNotDetectedModal isOpen={isOpenMetamaskNotDetectedModal} onClose={toggleMetamaskNotDetectedModal} />
+      <VoyagerModal isOpen={isOpenVoyagerModal} onClose={toggleVoyagerModal} />
     </Wrapper>
   )
 }

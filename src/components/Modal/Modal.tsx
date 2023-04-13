@@ -36,7 +36,10 @@ interface CompoundedComponent {
 
 const Modal: React.FC<ModalProps> & CompoundedComponent = (props) => {
   const { children, style, ...rest } = props
-  const modalStyles = { ...baseStyles, ...style }
+  const modalStyles = {
+    content: { ...baseStyles.content, ...(style?.content || {}) },
+    overlay: { ...baseStyles.overlay, ...(style?.overlay || {}) },
+  }
   return (
     <ReactModal style={modalStyles} {...rest}>
       {children}
