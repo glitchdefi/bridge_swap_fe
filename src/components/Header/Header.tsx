@@ -14,7 +14,6 @@ import { HamburgerIcon } from 'components/Svg'
 import { OutlineButton } from 'components/Button'
 // import { ThemeToggle } from './components/ThemeToggle'
 // import { HistoryBox } from './components/HistoryBox'
-import { Tooltip } from 'react-tooltip'
 import { AccountInfo } from './components/AccountInfo'
 import { MetamaskInfoModal } from './components/MetamaskInfoModal'
 import { GlitchInfoModal } from './components/GlitchInfoModal'
@@ -108,15 +107,9 @@ const Header: React.FC = () => {
 
       <div className="flex items-center">
         <div className="hidden gap-4 lg:flex lg:items-center">
-          <OutlineButton
-            className="!py-1 cross-chain-swap"
-            data-tooltip-id="cross-chain-swap__tooltip"
-            data-tooltip-content="Cross chain swap"
-            onClick={toggleVoyagerModal}
-          >
-            <img src="./images/voyager_logo.svg" alt="voyager-logo" />
+          <OutlineButton className="!py-1 cross-chain-swap" onClick={toggleVoyagerModal}>
+            <span>CROSS CHAIN SWAP</span>
           </OutlineButton>
-          <Tooltip id="cross-chain-swap__tooltip" />
 
           {!areAccountsLoaded ? (
             <div className="text-primary">Loading Glitch accounts ...</div>

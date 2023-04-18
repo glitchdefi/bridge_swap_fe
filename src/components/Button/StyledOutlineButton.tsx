@@ -9,6 +9,7 @@ const StyledOutlineButton = styled(StyledBaseButton)`
   padding-right: 16px;
 
   border: 1px solid ${theme`colors.primary`};
+  transition: all 0.3s ease;
 
   img {
     width: 16px;
@@ -21,6 +22,10 @@ const StyledOutlineButton = styled(StyledBaseButton)`
     line-height: 22px;
     font-weight: 600;
     color: ${theme`colors.primary`};
+  }
+
+  &:hover {
+    opacity: 0.85;
   }
 `
 
