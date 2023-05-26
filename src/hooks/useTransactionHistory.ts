@@ -1,43 +1,21 @@
 /* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-import { ethers } from 'ethers'
-import { useCallback, useEffect, useState } from 'react'
-import ethSwapToGlitchABI from 'assets/jsons/eth_swap_glitch_abi.json'
-import { GLITCH_BRIDGE_CONTRACT_ADDRESS } from 'constants/index'
-import web3Utils from 'web3-utils'
+import { useEffect, useMemo } from 'react'
+import useSWRMutation from 'swr/mutation'
 import { TransactionHistory } from 'types'
+import { fetcher } from 'services/swr.utils'
 
-const RPC_URL = `https://eth-goerli.g.alchemy.com/v2/${process.env.NEXT_PUBLIC_ALCHEMY_ID}`
-const INITIAL_BLOCK = 8130945
+export const useTransactionHistory = (address: string) => {
+  const { isMutating, data, trigger } = useSWRMutation(address ? `/transactionHistory/${address}` : null, fetcher)
 
-export const useTransactionHistory = () => {
-  const [isLoading, setIsLoading] = useState<boolean>(true)
-  const [historyTransactions, setHistoryTransactions] = useState<TransactionHistory[]>([])
-
-  const fetchTransactionHistory = useCallback(async () => {
-    const provider = new ethers.providers.JsonRpcProvider(RPC_URL)
-    const bridgeContract = new ethers.Contract(GLITCH_BRIDGE_CONTRACT_ADDRESS, ethSwapToGlitchABI, provider)
-    const events = await bridgeContract.queryFilter('TransferToGlitch', INITIAL_BLOCK, 'latest')
-    const transformEventsPromises = events.map(async (event) => {
-      const [from, to, amount] = event.args
-      const block = await event.getBlock()
-      return {
-        hash: event?.transactionHash,
-        from: from?.trim(),
-        to: to?.trim(),
-        amount: web3Utils.fromWei(amount?.toString()),
-        time: block?.timestamp,
-      }
-    })
-
-    const historyTransactions = await Promise.all(transformEventsPromises)
-    setHistoryTransactions(historyTransactions.sort((a, b) => b.time - a.time) as unknown as TransactionHistory[])
-    setIsLoading(false)
-  }, [])
+  const historyTransactions = useMemo(
+    () => data?.sort((a: TransactionHistory, b: TransactionHistory) => b.id - a.id) as unknown as TransactionHistory[],
+    [data],
+  )
 
   useEffect(() => {
-    fetchTransactionHistory()
+    if (address) trigger({})
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [])
+  }, [address])
 
-  return { isLoading, historyTransactions }
+  return { isLoading: isMutating, historyTransactions }
 }

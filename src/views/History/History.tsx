@@ -44,13 +44,14 @@ const CardContent = styled.div`
 
 export const History: React.FC = () => {
   const router = useRouter()
-  const { isLoading, historyTransactions } = useTransactionHistory()
   const { address } = useAddress()
   const { allAccounts } = useGlitchAccounts()
 
   const [addressSelected, setAddressSelected] = useState<AddressDropdownTypes | null>()
 
-  const isShowSelectWallet = address || allAccounts?.length
+  const { isLoading, historyTransactions } = useTransactionHistory(addressSelected?.value)
+
+  const isShowSelectWallet = address || !!allAccounts?.length
 
   const combineAddresses = useMemo(() => {
     if (isShowSelectWallet) {
