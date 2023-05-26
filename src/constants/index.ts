@@ -38,6 +38,7 @@ export const GLITCH_UAT_EXPLORER_URL = 'https://dev-explorer-v2.netlify.app'
 
 export const BUSINESS_FEE = process.env.NEXT_PUBLIC_BUSINESS_FEE
 export const SUBSIDIZE_FLAG = process.env.NEXT_PUBLIC_SUBSIDIZE_FLAG
+export const GLITCH_API = `${process.env.NEXT_PUBLIC_GLITCH_API}/api`
 
 // export const GLITCH_ETH_TOKEN_ADDRESS = '0x9F720F007b9d9169c4481CeaA2fA82fdfec0b21F'
 export const GLITCH_ETH_TOKEN_ADDRESS = '0x7428417089727238b4B3BA5933c77357Af9B56f5'

@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 import { BigNumber } from 'ethers'
 
 export interface Transaction {
@@ -47,11 +48,16 @@ export interface Log {
 }
 
 export type TransactionHistory = {
-  hash: string
-  from: string
-  to: string
   amount: string
-  time: string
+  business_fee_amount: string
+  business_fee_percentage: string
+  extrinsic_hash: string
+  from_eth_address: string
+  id: number
+  net_amount: string
+  to_glitch_address: string
+  tx_eth_hash: string
+  tx_glitch_hash: string
 }
 
 export interface TransferError {

@@ -1,6 +1,7 @@
 import type { AppProps } from 'next/app'
 import dynamic from 'next/dynamic'
 import Head from 'next/head'
+import { SWRConfig } from 'swr'
 import { ToastContainer } from 'react-toastify'
 import { configureChains, createClient, WagmiConfig } from 'wagmi'
 import { publicProvider } from 'wagmi/providers/public'
@@ -62,17 +63,24 @@ const MyApp: React.FC<AppProps> = (props) => {
       </Head>
 
       <WagmiConfig client={client}>
-        <PolkadotApiProvider>
-          <LanguageProvider>
-            <GlobalStyles />
-            <ThemeProvider>
-              <Container>
-                <App {...props} />
-              </Container>
-            </ThemeProvider>
-          </LanguageProvider>
-          <ToastContainer theme="dark" icon={false} />
-        </PolkadotApiProvider>
+        <SWRConfig
+          value={{
+            refreshInterval: 3000,
+            revalidateOnFocus: false,
+          }}
+        >
+          <PolkadotApiProvider>
+            <LanguageProvider>
+              <GlobalStyles />
+              <ThemeProvider>
+                <Container>
+                  <App {...props} />
+                </Container>
+              </ThemeProvider>
+            </LanguageProvider>
+            <ToastContainer theme="dark" icon={false} />
+          </PolkadotApiProvider>
+        </SWRConfig>
       </WagmiConfig>
     </>
   )
