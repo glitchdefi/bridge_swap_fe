@@ -1,6 +1,6 @@
 # Glitch Bridge Web
 
-This project contains the main features of the Petsverse web.
+This project contains the main features of the Glitch Bridge Web.
 
 ## Quick Start
 
