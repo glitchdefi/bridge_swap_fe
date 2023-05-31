@@ -20,6 +20,7 @@ module.exports = {
       color7: 'var(--color-7)',
       color8: 'var(--color-8)',
       color9: 'var(--color-9)',
+      transparent: 'transparent',
     },
     extend: {},
   },

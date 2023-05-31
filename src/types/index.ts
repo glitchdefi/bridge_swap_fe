@@ -63,3 +63,8 @@ export type TransactionHistory = {
 export interface TransferError {
   cause?: unknown
 }
+
+export interface Pagination {
+  page: number
+  limit: number
+}

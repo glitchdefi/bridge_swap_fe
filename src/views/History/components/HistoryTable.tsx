@@ -12,6 +12,7 @@ import { GLITCH_UAT_EXPLORER_URL } from 'constants/index'
 import { CheckCircleIcon } from 'components/Svg'
 import { Text } from 'components/Text'
 import { calculateNetAmount } from 'utils/calculateNetAmount'
+import { Spin } from 'components/Loader'
 import { AddressDropdownTypes } from './SelectWalletView'
 
 const StyledTable = styled.table`
@@ -52,86 +53,102 @@ const StyledTable = styled.table`
 `
 
 interface HistoryTableProps {
+  loading: boolean
   addressSelected: AddressDropdownTypes
   data: TransactionHistory[]
 }
 
 export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
-  const { data, addressSelected } = props
+  const { loading, data, addressSelected } = props
 
   const { chain } = useNetwork()
 
   return (
-    <div className="overflow-x-auto">
-      <StyledTable className="table-auto">
-        <thead>
-          <tr>
-            <th className="text-left">Tx hash</th>
-            <th className="text-left">From (network)</th>
-            <th className="text-left">To (network)</th>
-            {/* <th className="text-right">Time</th> */}
-            <th className="text-end">Amount</th>
-            <th className="text-center">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {data?.length ? (
-            data.map((t: TransactionHistory, i: number) => {
-              const { tx_eth_hash, tx_glitch_hash, from_eth_address, to_glitch_address, amount, business_fee_amount } =
-                t
-              const explorerUrl = addressSelected?.isEthAddress
-                ? `${chain?.blockExplorers?.default?.url}/tx/${tx_eth_hash}`
-                : `${GLITCH_UAT_EXPLORER_URL}/tx/${tx_glitch_hash}`
-              const txHash = addressSelected?.isEthAddress ? tx_eth_hash : tx_glitch_hash
-              return (
-                <tr key={`${i}`}>
-                  <td>
-                    <div className="flex items-start p-4">
-                      <Text
-                        as="a"
-                        target="_blank"
-                        rel="noreferrer"
-                        href={explorerUrl}
-                        color={theme`colors.primary`}
-                        data-tooltip-id="tx-hash"
-                        data-tooltip-content={txHash}
-                      >
-                        {truncateAddress(txHash)}
-                      </Text>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex items-start p-4">
-                      <img className="w-5 h-5 mt-1 mr-2" src="./images/logo-eth.png" alt="logo" />
-                      <div>
-                        <Text color={theme`colors.color9`}>Ethereum</Text>
+    <div tw="relative">
+      {loading && (
+        <div tw="absolute flex items-center justify-center h-full w-full z-10">
+          <Spin />
+        </div>
+      )}
+      <div className="overflow-x-auto">
+        <StyledTable className="table-auto">
+          <thead>
+            <tr>
+              <th className="text-left">Tx hash</th>
+              <th className="text-left">From (network)</th>
+              <th className="text-left">To (network)</th>
+              {/* <th className="text-right">Time</th> */}
+              <th className="text-end">Amount</th>
+              <th className="text-center">Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {data?.length ? (
+              data.map((t: TransactionHistory, i: number) => {
+                const {
+                  tx_eth_hash,
+                  tx_glitch_hash,
+                  from_eth_address,
+                  to_glitch_address,
+                  amount,
+                  business_fee_amount,
+                } = t
+                const explorerUrl = addressSelected?.isEthAddress
+                  ? `${chain?.blockExplorers?.default?.url}/tx/${tx_eth_hash}`
+                  : `${GLITCH_UAT_EXPLORER_URL}/tx/${tx_glitch_hash}`
+                const txHash = addressSelected?.isEthAddress ? tx_eth_hash : tx_glitch_hash
+                return (
+                  <tr key={`${i}`}>
+                    <td>
+                      <div className="flex items-start p-4">
                         <Text
-                          data-tooltip-id="tx-from"
-                          data-tooltip-content={from_eth_address}
+                          as="a"
+                          target="_blank"
+                          rel="noreferrer"
+                          href={explorerUrl}
                           color={theme`colors.primary`}
+                          data-tooltip-id="tx-hash"
+                          data-tooltip-content={txHash}
                         >
-                          {truncateAddress(from_eth_address)}
+                          {truncateAddress(txHash)}
                         </Text>
+                        <Tooltip id="tx-hash" />
                       </div>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex items-start p-4">
-                      <img className="w-5 h-5 mt-1 mr-2" src="./images/logo.png" alt="logo" />
-                      <div>
-                        <Text color={theme`colors.color9`}>Glitch</Text>
-                        <Text
-                          data-tooltip-id="tx-to"
-                          data-tooltip-content={to_glitch_address}
-                          className="to-link"
-                          color={theme`colors.primary`}
-                        >
-                          {truncateAddress(to_glitch_address)}
-                        </Text>
+                    </td>
+                    <td>
+                      <div className="flex items-start p-4">
+                        <img className="w-5 h-5 mt-1 mr-2" src="./images/logo-eth.png" alt="logo" />
+                        <div>
+                          <Text color={theme`colors.color9`}>Ethereum</Text>
+                          <Text
+                            data-tooltip-id="tx-from"
+                            data-tooltip-content={from_eth_address}
+                            color={theme`colors.primary`}
+                          >
+                            {truncateAddress(from_eth_address)}
+                          </Text>
+                          <Tooltip id="tx-from" />
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                  {/* <td>
+                    </td>
+                    <td>
+                      <div className="flex items-start p-4">
+                        <img className="w-5 h-5 mt-1 mr-2" src="./images/logo.png" alt="logo" />
+                        <div>
+                          <Text color={theme`colors.color9`}>Glitch</Text>
+                          <Text
+                            data-tooltip-id="tx-to"
+                            data-tooltip-content={to_glitch_address}
+                            className="to-link"
+                            color={theme`colors.primary`}
+                          >
+                            {truncateAddress(to_glitch_address)}
+                          </Text>
+                          <Tooltip id="tx-to" />
+                        </div>
+                      </div>
+                    </td>
+                    {/* <td>
                     <div className="flex flex-col justify-end p-4 w-[200px]">
                        <Text textAlign="right" color={theme`colors.color9`}>
                         {moment((time as unknown as number) * 1000).format('DD MMM, YYYY')}
@@ -144,35 +161,33 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                       </Text>
                     </div>
                   </td> */}
-                  <td>
-                    <div className="flex justify-end p-4">
-                      <Text textAlign="right" color={theme`colors.color9`}>
-                        {amount ? numberWithCommas(calculateNetAmount(amount, business_fee_amount)) : 0} GLCH
-                      </Text>
-                    </div>
-                  </td>
-                  <td>
-                    <div className="flex justify-center p-4">
-                      <CheckCircleIcon />
-                    </div>
-                  </td>
-                  <Tooltip id="tx-hash" />
-                  <Tooltip id="tx-from" />
-                  <Tooltip id="tx-to" />
-                </tr>
-              )
-            })
-          ) : (
-            <tr>
-              <td colSpan={5}>
-                <div className="empty-wrapper">
-                  <div className="empty-message">No data</div>
-                </div>
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </StyledTable>
+                    <td>
+                      <div className="flex justify-end p-4">
+                        <Text textAlign="right" color={theme`colors.color9`}>
+                          {amount ? numberWithCommas(calculateNetAmount(amount, business_fee_amount)) : 0} GLCH
+                        </Text>
+                      </div>
+                    </td>
+                    <td>
+                      <div className="flex justify-center p-4">
+                        <CheckCircleIcon />
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })
+            ) : (
+              <tr>
+                <td colSpan={5}>
+                  <div className="empty-wrapper">
+                    <div className="empty-message">No data</div>
+                  </div>
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </StyledTable>
+      </div>
     </div>
   )
 }
