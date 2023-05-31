@@ -12,7 +12,7 @@ import { truncateAddress } from 'utils/strings'
 // Components
 import { Text } from 'components/Text'
 import { ArrowLeftIcon } from 'components/Svg'
-import { Spin } from 'components/Loader'
+import { Pagination } from 'components/Pagination'
 import { AddressDropdownTypes, SelectWalletView } from './components/SelectWalletView'
 import { HistoryTable } from './components/HistoryTable'
 
@@ -49,7 +49,9 @@ export const History: React.FC = () => {
 
   const [addressSelected, setAddressSelected] = useState<AddressDropdownTypes | null>()
 
-  const { isLoading, historyTransactions } = useTransactionHistory(addressSelected?.value)
+  const { isLoading, transactionHistory, hasNext, pagination, onPageChange } = useTransactionHistory(
+    addressSelected?.value,
+  )
 
   const isShowSelectWallet = address || !!allAccounts?.length
 
@@ -93,13 +95,8 @@ export const History: React.FC = () => {
               />
             </div>
           )}
-          {isLoading ? (
-            <div tw="flex items-center justify-center h-full w-full">
-              <Spin />
-            </div>
-          ) : (
-            <HistoryTable addressSelected={addressSelected} data={historyTransactions} />
-          )}
+          <HistoryTable loading={isLoading} addressSelected={addressSelected} data={transactionHistory} />
+          <Pagination current={pagination.page} isDisabledNext={!hasNext} onChange={onPageChange} />
         </CardContent>
       </Card>
     </Wrapper>

@@ -20,6 +20,7 @@ import { LanguageProvider } from 'contexts/Localization'
 
 import { Container } from 'components/Layout'
 
+import 'components/Pagination/styles/index.css'
 import 'styles/css/tailwindcss.css'
 import 'react-toastify/dist/ReactToastify.css'
 
