@@ -109,7 +109,7 @@ export const ethereumChains = [
   'armonia-eva',
   'armonia-wall-e',
 ]
-const API_ENDPOINT = 'wss://wss-uat.glitch.finance'
+const API_ENDPOINT = process.env.NEXT_PUBLIC_WS_PROVIDER
 const BRIDGE_ORIGIN_NAME = 'bridge.glitch.finance'
 
 let api: ApiPromise
@@ -295,7 +295,6 @@ const PolkadotApiProvider: React.FC<{ children: React.ReactNode }> = memo(({ chi
         api.on('connected', () => setIsApiConnected(true))
         api.on('disconnected', () => setIsApiConnected(false))
         api.on('ready', () => {
-          console.log(api.genesisHash.toHuman())
           const isGlitchWalletConnected = localStorage.getItem(GLITCH_WALLET_CONNECTED_KEY) === 'true'
           if (isGlitchWalletConnected) {
             onConnectGlitchWallet()
