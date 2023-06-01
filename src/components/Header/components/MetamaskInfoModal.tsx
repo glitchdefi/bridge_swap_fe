@@ -87,9 +87,7 @@ export const MetamaskInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
                   value={chain.id}
                   items={DROPDOWN_DATA}
                   width={250}
-                  onChange={(value) => {
-                    switchNetwork(value[1])
-                  }}
+                  onChange={switchNetwork}
                   isOpen={openNetworkDropdown}
                   onClose={() => setOpenNetworkDropdown(false)}
                 />

@@ -7,7 +7,6 @@ import { useMetamask } from 'hooks/useMetamask'
 import { useAccounts as useGlitchAccounts } from 'hooks/substrate/useAccounts'
 import { useSwitchNetwork } from 'hooks/useSwitchNetwork'
 import { isEthereumChain } from 'utils/isEthereumChain'
-import { ethereumChainIds } from 'constants/supportedNetworks'
 
 // Components
 import { HamburgerIcon } from 'components/Svg'
@@ -67,7 +66,7 @@ const Header: React.FC = () => {
 
   useEffect(() => {
     if (isMetamaskConnected && !isEthereumChain(chain.id)) {
-      switchNetwork(ethereumChainIds[1])
+      switchNetwork()
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isMetamaskConnected, chain])

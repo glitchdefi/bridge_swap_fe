@@ -12,7 +12,7 @@ import { truncateAddress } from 'utils/strings'
 import { Text } from 'components/Text'
 import { OutlineDownArrow } from 'components/Svg'
 import { Dropdown } from 'components/Dropdown'
-import { NETWORK_DROPDOWN } from 'constants/index'
+import { NETWORK_DROPDOWN, isDevelopment } from 'constants/index'
 
 const AccountInfoWrapper = styled.div`
   display: flex;
@@ -102,7 +102,7 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, glitchAccou
             }}
           >
             <Text color={theme`colors.color8`} className="mr-2">
-              {isGlitchNetwork ? 'Glitch UAT' : networkSelected?.label}
+              {isGlitchNetwork ? `Glitch ${isDevelopment ? 'UAT' : 'Mainnet'}` : networkSelected?.label}
             </Text>
             <OutlineDownArrow width={12} height={12} />
           </div>
@@ -115,7 +115,7 @@ export const AccountInfo: React.FC<Props> = memo(({ isGlitchNetwork, glitchAccou
         if (isGlitchNetwork) {
           setAccountSelected(value)
         } else {
-          switchNetwork(value[1])
+          switchNetwork()
         }
       }}
       isOpen={openNetworkDropdown}

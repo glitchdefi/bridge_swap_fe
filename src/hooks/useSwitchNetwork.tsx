@@ -1,11 +1,12 @@
-import { useEffect } from 'react'
+import { useCallback, useEffect } from 'react'
 import { toast } from 'react-toastify'
-import { useSwitchNetwork as useWagmiSwitchNetwork } from 'wagmi'
+import { chain, useSwitchNetwork as useWagmiSwitchNetwork } from 'wagmi'
 
 import { Toast } from 'components/Toast'
+import { isDevelopment } from 'constants/index'
 
 export const useSwitchNetwork = (): {
-  switchNetwork: (chainId_?: number) => void
+  switchNetwork: () => void
   isLoading?: boolean
   pendingChainId?: number
 } => {
@@ -25,5 +26,9 @@ export const useSwitchNetwork = (): {
     }
   }, [error])
 
-  return { switchNetwork, isLoading, pendingChainId }
+  const _switchNetwork = useCallback(() => {
+    switchNetwork(isDevelopment ? chain.goerli.id : chain.mainnet.id)
+  }, [switchNetwork])
+
+  return { switchNetwork: _switchNetwork, isLoading, pendingChainId }
 }

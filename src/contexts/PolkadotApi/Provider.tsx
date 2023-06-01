@@ -14,7 +14,7 @@ import { toast } from 'react-toastify'
 import { defaults as addressDefaults } from '@polkadot/util-crypto/address/defaults'
 import { KeyringStore } from '@polkadot/ui-keyring/types'
 import web3Utils from 'web3-utils'
-import { DEFAULT_FROM_ADDRESS, GLITCH_WALLET_CONNECTED_KEY } from 'constants/index'
+import { DEFAULT_FROM_ADDRESS, GLITCH_WALLET_CONNECTED_KEY, isDevelopment } from 'constants/index'
 import { Text } from 'components/Text'
 import { theme } from 'twin.macro'
 import registry from './typeRegistry'
@@ -161,7 +161,7 @@ async function getInjectedAccounts(injectedPromise: Promise<InjectedExtension[]>
         <Text large bold mb="6px" color={theme`colors.fail`}>
           Please switch network
         </Text>
-        <Text>Please switch to Mainnet of Glitch blockchain in Glitch wallet</Text>
+        <Text>Please switch to {isDevelopment ? 'UAT' : 'Mainnet'} of Glitch blockchain in Glitch wallet</Text>
       </div>,
     )
     return []
