@@ -26,7 +26,7 @@ export const SwitchNetworkModal: React.FC<Props> = (props) => {
               className="flex items-center p-4 transition-all duration-300 cursor-pointer hover:bg-color4"
               key={`${i}`}
               onClick={() => {
-                switchNetwork(o.chainIds[1])
+                switchNetwork()
                 onClose()
               }}
             >

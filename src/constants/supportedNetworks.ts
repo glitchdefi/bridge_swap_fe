@@ -1,3 +1,4 @@
+import { isDevelopment } from 'constants/index'
 import { chain, Chain } from 'wagmi'
 
 export const bscTestnet: Chain = {
@@ -36,16 +37,10 @@ export const bscMainnet: Chain = {
   testnet: false,
 }
 
-// export const chains = [chain.mainnet, chain.goerli, bscTestnet, bscMainnet]
-export const chains = [chain.goerli, bscTestnet]
+export const chains = isDevelopment ? [chain.goerli] : [chain.mainnet]
 
 export const ethereumChainIds = [1, 5]
 export const bscChainIds = [56, 97]
 export const glitchChainId = 42
 
-// 1 - ETH mainnet
-// 5 - ETH Goerli
-// 56 - BSC Mainnet
-// 97 - BSC Testnet
-// 42 - GLCH
-export const supportedChainIds = [...ethereumChainIds, glitchChainId]
+export const supportedChainIds = isDevelopment ? [chain.goerli.id] : [chain.mainnet.id]

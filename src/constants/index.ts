@@ -1,6 +1,7 @@
 // const IS_DEV = process.env.NODE_ENV !== 'production'
 
 export const GLITCH_WALLET_CONNECTED_KEY = 'isGlitchWalletConnected'
+export const isDevelopment = process.env.NEXT_PUBLIC_IS_DEVELOPMENT === 'true'
 
 export const NETWORK_DROPDOWN = {
   eth: {
