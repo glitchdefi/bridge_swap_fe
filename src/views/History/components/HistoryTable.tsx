@@ -7,7 +7,7 @@ import { Tooltip } from 'react-tooltip'
 import { TransactionHistory } from 'types'
 import { truncateAddress } from 'utils/strings'
 import { numberWithCommas } from 'utils/numbers'
-import { GLITCH_UAT_EXPLORER_URL } from 'constants/index'
+import { GLITCH_EXPLORER } from 'constants/index'
 
 import { CheckCircleIcon } from 'components/Svg'
 import { Text } from 'components/Text'
@@ -95,7 +95,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                 } = t
                 const explorerUrl = addressSelected?.isEthAddress
                   ? `${chain?.blockExplorers?.default?.url}/tx/${tx_eth_hash}`
-                  : `${GLITCH_UAT_EXPLORER_URL}/tx/${tx_glitch_hash}`
+                  : `${GLITCH_EXPLORER}/tx/${tx_glitch_hash}`
                 const txHash = addressSelected?.isEthAddress ? tx_eth_hash : tx_glitch_hash
                 return (
                   <tr key={`${i}`}>
