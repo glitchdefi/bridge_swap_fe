@@ -3,7 +3,7 @@ import { styled, theme } from 'twin.macro'
 
 import { usePolkadotApi } from 'contexts/PolkadotApi/hooks'
 
-import { GLITCH_UAT_EXPLORER_URL } from 'constants/index'
+import { GLITCH_EXPLORER } from 'constants/index'
 import { useCopy } from 'hooks/useCopy'
 
 // Components
@@ -71,7 +71,7 @@ export const GlitchInfoModal: React.FC<Props> = ({ isOpen, onClose }) => {
           <div className="p-4">
             <div className="flex items-center cursor-pointer">
               <a
-                href={`${GLITCH_UAT_EXPLORER_URL}/account/${accountSelected}`}
+                href={`${GLITCH_EXPLORER}/account/${accountSelected}`}
                 className="flex items-center cursor-pointer"
                 target="_blank"
                 rel="noreferrer"
