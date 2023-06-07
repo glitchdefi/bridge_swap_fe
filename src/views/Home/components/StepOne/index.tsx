@@ -67,14 +67,20 @@ export const StepOne: React.FC<Props> = ({ initialTx, onNext }) => {
   const [isFetchingTxFee, setIsFetchingTxFee] = useState<boolean>(false)
   const debouncedAmount = useDebounce(transaction.amount.value, 500)
 
-  const estimatedAmountReceived = useMemo(
-    () => calculateEstimatedReceived(transaction.amount.value, transaction.fee),
-    [transaction.amount.value, transaction.fee],
-  )
-  const estimatedFee = useMemo(
-    () => calculateEstimatedFee(transaction.fee, transaction.amount.value),
-    [transaction.fee, transaction.amount],
-  )
+  const estimatedAmountReceived = useMemo(() => {
+    if (Number(transaction.amount.value) >= Number(minAmount)) {
+      return calculateEstimatedReceived(transaction.amount.value, transaction.fee)
+    }
+    return ''
+  }, [transaction.amount.value, transaction.fee, minAmount])
+
+  const estimatedFee = useMemo(() => {
+    if (Number(transaction.amount.value) >= Number(minAmount)) {
+      return calculateEstimatedFee(transaction.fee, transaction.amount.value)
+    }
+    return ''
+  }, [transaction.fee, transaction.amount, minAmount])
+
   const isContinueDisabled = useMemo(() => {
     return (
       !transaction.amount.value ||
