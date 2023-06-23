@@ -32,6 +32,8 @@ export const SUPPORTED_NETWORK = [
   },
 ]
 
+export const GLITCH_WALLET_STORE_URL =
+  'https://chrome.google.com/webstore/detail/glitch-wallet/dlfmkkfemldamjkpoppljoiinkmlpegd'
 export const DEFAULT_FROM_ADDRESS = '5DTestUPts3kjeXSTMyerHihn1uwMfLj8vU8sqF7qYrFabHE'
 
 export const GLITCH_EXPLORER = process.env.NEXT_PUBLIC_GLITCH_EXPLORER
