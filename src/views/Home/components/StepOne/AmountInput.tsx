@@ -10,6 +10,7 @@ import { Text } from 'components/Text'
 import { OutlineButton } from 'components/Button'
 import { Input } from 'components/Input'
 import { InfoOutline } from 'components/Svg'
+import { GLITCH_WALLET_STORE_URL } from 'constants/index'
 
 const Wrapper = styled.div`
   img {
@@ -164,7 +165,7 @@ export const AmountInput: React.FC<Props> = (props) => {
             <Text className="mb-4" color={theme`colors.color7`}>
               In order to transfer GLCH from Ethereum network to Glitch network, you also need to connect to Glitch
               wallet. You do not have Glitch wallet? Download{' '}
-              <a className="cursor-pointer text-link" href="/download/glitch_wallet_v1.4.1.zip" target="_blank">
+              <a className="cursor-pointer text-link" href={GLITCH_WALLET_STORE_URL} target="_blank" rel="noreferrer">
                 here
               </a>
             </Text>
