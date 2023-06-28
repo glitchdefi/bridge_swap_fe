@@ -11,8 +11,8 @@ import { GLITCH_EXPLORER } from 'constants/index'
 
 import { CheckCircleIcon } from 'components/Svg'
 import { Text } from 'components/Text'
-import { calculateNetAmount } from 'utils/calculateNetAmount'
 import { Spin } from 'components/Loader'
+import { fromWei } from 'web3-utils'
 import { AddressDropdownTypes } from './SelectWalletView'
 
 const StyledTable = styled.table`
@@ -85,14 +85,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
           <tbody>
             {data?.length ? (
               data.map((t: TransactionHistory, i: number) => {
-                const {
-                  tx_eth_hash,
-                  tx_glitch_hash,
-                  from_eth_address,
-                  to_glitch_address,
-                  amount,
-                  business_fee_amount,
-                } = t
+                const { tx_eth_hash, tx_glitch_hash, from_eth_address, to_glitch_address, net_amount } = t
                 const explorerUrl = addressSelected?.isEthAddress
                   ? `${chain?.blockExplorers?.default?.url}/tx/${tx_eth_hash}`
                   : `${GLITCH_EXPLORER}/tx/${tx_glitch_hash}`
@@ -163,8 +156,11 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                   </td> */}
                     <td>
                       <div className="flex justify-end p-4">
+                        {/* <Text textAlign="right" color={theme`colors.color9`}>
+                          {amount ? numberWithCommas(calculateNetAmount(amount, business_fee_percentage)) : 0} GLCH
+                        </Text> */}
                         <Text textAlign="right" color={theme`colors.color9`}>
-                          {amount ? numberWithCommas(calculateNetAmount(amount, business_fee_amount)) : 0} GLCH
+                          {net_amount ? numberWithCommas(fromWei(net_amount)) : 0} GLCH
                         </Text>
                       </div>
                     </td>

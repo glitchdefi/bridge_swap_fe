@@ -3,6 +3,7 @@ import { theme, styled } from 'twin.macro'
 
 import { Text } from 'components/Text'
 import { media } from 'styles/media'
+import moment from 'moment'
 
 const Wrapper = styled.div`
   display: flex;
@@ -32,7 +33,7 @@ const Footer: React.FC = () => {
               Powered by Glitch Finance
             </Text>
             <Text fontSize="12px" color={theme`colors.color7`}>
-              Copyright © 2022. Version 0.0.1
+              Copyright © {moment().year()}. Version 0.0.1
             </Text>
           </div>
 
