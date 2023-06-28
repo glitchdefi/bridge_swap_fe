@@ -129,7 +129,7 @@ const Header: React.FC = () => {
               </OutlineButton>
             </div>
           )}
-          {/* <HistoryBox /> */}
+          <HistoryBox />
         </div>
 
         <div className="cursor-pointer lg:hidden">
