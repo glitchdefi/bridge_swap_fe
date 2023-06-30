@@ -155,15 +155,21 @@ async function getInjectedAccounts(injectedPromise: Promise<InjectedExtension[]>
         }),
       }),
     )
-  } catch (error) {
-    toast.error(
-      <div>
-        <Text large bold mb="6px" color={theme`colors.fail`}>
-          Please switch network
-        </Text>
-        <Text>Please switch to {isDevelopment ? 'UAT' : 'Mainnet'} of Glitch blockchain in Glitch wallet</Text>
-      </div>,
-    )
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    if (error.message === 'Wrong network') {
+      toast.error(
+        <div>
+          <Text large bold mb="6px" color={theme`colors.fail`}>
+            Please switch network
+          </Text>
+          <Text>Please switch to {isDevelopment ? 'UAT' : 'Mainnet'} of Glitch blockchain in Glitch wallet</Text>
+        </div>,
+      )
+
+      return []
+    }
+    toast.error(error?.message || error)
     return []
   }
 }
