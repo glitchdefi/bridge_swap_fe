@@ -1,8 +1,8 @@
 import React from 'react'
 import { styled, theme } from 'twin.macro'
 import { useNetwork } from 'wagmi'
-import { Tooltip } from 'react-tooltip'
 // import { fromWei } from 'web3-utils'
+import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 import { TransactionHistory } from 'types'
 import { truncateAddress } from 'utils/strings'
@@ -105,7 +105,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                         >
                           {truncateAddress(txHash)}
                         </Text>
-                        <Tooltip id="tx-hash" />
+                        <ReactTooltip id="tx-hash" />
                       </div>
                     </td>
                     <td>
@@ -120,7 +120,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                           >
                             {truncateAddress(from_eth_address)}
                           </Text>
-                          <Tooltip id="tx-from" />
+                          <ReactTooltip id="tx-from" />
                         </div>
                       </div>
                     </td>
@@ -137,7 +137,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                           >
                             {truncateAddress(to_glitch_address)}
                           </Text>
-                          <Tooltip id="tx-to" />
+                          <ReactTooltip id="tx-to" />
                         </div>
                       </div>
                     </td>

@@ -34,7 +34,7 @@
     "react-hook-form": "^7.34.2",
     "react-modal": "^3.15.1",
     "react-toastify": "^9.0.8",
-    "react-tooltip": "^5.8.1",
+    "react-tooltip": "^5.18.0",
     "styled-components": "^5.3.5",
     "styled-system": "^5.1.5",
     "swr": "^2.1.5",

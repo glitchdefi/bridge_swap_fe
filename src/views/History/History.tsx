@@ -57,7 +57,7 @@ export const History: React.FC = () => {
 
   const combineAddresses = useMemo(() => {
     if (isShowSelectWallet) {
-      return (address ? [address, ...allAccounts] : allAccounts).map((addr) => ({
+      return (address ? [address, ...allAccounts] : allAccounts)?.map((addr) => ({
         label: truncateAddress(addr),
         value: addr,
         isEthAddress: addr?.startsWith('0x'),
