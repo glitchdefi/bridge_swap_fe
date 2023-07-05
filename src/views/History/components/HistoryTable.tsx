@@ -13,6 +13,7 @@ import { CheckCircleIcon } from 'components/Svg'
 import { Text } from 'components/Text'
 import { Spin } from 'components/Loader'
 import { fromWei } from 'web3-utils'
+import moment from 'moment'
 import { AddressDropdownTypes } from './SelectWalletView'
 
 const StyledTable = styled.table`
@@ -85,11 +86,22 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
           <tbody>
             {data?.length ? (
               data.map((t: TransactionHistory, i: number) => {
-                const { tx_eth_hash, tx_glitch_hash, from_eth_address, to_glitch_address, net_amount } = t
+                const {
+                  tx_eth_hash,
+                  extrinsic_hash,
+                  from_eth_address,
+                  to_glitch_address,
+                  amount,
+                  net_amount,
+                  glitch_timestamp,
+                } = t
                 const explorerUrl = addressSelected?.isEthAddress
                   ? `${chain?.blockExplorers?.default?.url}/tx/${tx_eth_hash}`
-                  : `${GLITCH_EXPLORER}/tx/${tx_glitch_hash}`
-                const txHash = addressSelected?.isEthAddress ? tx_eth_hash : tx_glitch_hash
+                  : `${GLITCH_EXPLORER}/tx/${extrinsic_hash}`
+                const txHash = addressSelected?.isEthAddress ? tx_eth_hash : extrinsic_hash
+                const txAmount = addressSelected?.isEthAddress ? amount : net_amount
+                const txTime = addressSelected?.isEthAddress ? null : glitch_timestamp
+
                 return (
                   <tr key={`${i}`}>
                     <td>
@@ -141,26 +153,25 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                         </div>
                       </div>
                     </td>
-                    {/* <td>
-                    <div className="flex flex-col justify-end p-4 w-[200px]">
-                       <Text textAlign="right" color={theme`colors.color9`}>
-                        {moment((time as unknown as number) * 1000).format('DD MMM, YYYY')}
-                      </Text>
-                      <Text fontSize="12px" textAlign="right" color={theme`colors.color6`}>
-                        {moment((time as unknown as number) * 1000)
-                          .utc()
-                          .format('HH:mm:ss A')}{' '}
-                        GMT
-                      </Text>
-                    </div>
-                  </td> */}
+                    {txTime && (
+                      <td>
+                        <div className="flex flex-col justify-end p-4 w-[200px]">
+                          <Text textAlign="right" color={theme`colors.color9`}>
+                            {moment(txTime).format('DD MMM, YYYY')}
+                          </Text>
+                          <Text fontSize="12px" textAlign="right" color={theme`colors.color6`}>
+                            {moment(txTime).utc().format('HH:mm:ss A')} GMT
+                          </Text>
+                        </div>
+                      </td>
+                    )}
                     <td>
                       <div className="flex justify-end p-4">
                         {/* <Text textAlign="right" color={theme`colors.color9`}>
                           {amount ? numberWithCommas(calculateNetAmount(amount, business_fee_percentage)) : 0} GLCH
                         </Text> */}
                         <Text textAlign="right" color={theme`colors.color9`}>
-                          {net_amount ? numberWithCommas(fromWei(net_amount)) : 0} GLCH
+                          {txAmount ? numberWithCommas(fromWei(txAmount)) : 0} GLCH
                         </Text>
                       </div>
                     </td>
