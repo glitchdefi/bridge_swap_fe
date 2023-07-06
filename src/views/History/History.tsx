@@ -22,7 +22,7 @@ const Wrapper = styled.div`
 
 const Card = styled.div`
   background-color: ${theme`colors.color5`};
-  max-width: 912px;
+  max-width: 1024px;
   margin: 0px auto;
 `
 

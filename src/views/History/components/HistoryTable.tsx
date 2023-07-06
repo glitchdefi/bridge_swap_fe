@@ -1,7 +1,6 @@
 import React from 'react'
 import { styled, theme } from 'twin.macro'
 import { useNetwork } from 'wagmi'
-// import { fromWei } from 'web3-utils'
 import { Tooltip as ReactTooltip } from 'react-tooltip'
 
 import { TransactionHistory } from 'types'
@@ -15,6 +14,26 @@ import { Spin } from 'components/Loader'
 import { fromWei } from 'web3-utils'
 import moment from 'moment'
 import { AddressDropdownTypes } from './SelectWalletView'
+
+const StyledTableWrapper = styled.div`
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-primary) var(--color-3);
+
+  &::-webkit-scrollbar {
+    width: 5px;
+    height: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: var(--color-primary);
+    border-radius: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background-color: var(--color-3);
+    border-radius: 4px;
+  }
+`
 
 const StyledTable = styled.table`
   width: 100%;
@@ -71,14 +90,14 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
           <Spin />
         </div>
       )}
-      <div className="overflow-x-auto">
+      <StyledTableWrapper className="overflow-x-auto">
         <StyledTable className="table-auto">
           <thead>
             <tr>
               <th className="text-left">Tx hash</th>
               <th className="text-left">From (network)</th>
               <th className="text-left">To (network)</th>
-              {/* <th className="text-right">Time</th> */}
+              <th className="text-right">Time</th>
               <th className="text-end">Amount</th>
               <th className="text-center">Status</th>
             </tr>
@@ -153,23 +172,19 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                         </div>
                       </div>
                     </td>
-                    {txTime && (
-                      <td>
-                        <div className="flex flex-col justify-end p-4 w-[200px]">
-                          <Text textAlign="right" color={theme`colors.color9`}>
-                            {moment(txTime).format('DD MMM, YYYY')}
-                          </Text>
-                          <Text fontSize="12px" textAlign="right" color={theme`colors.color6`}>
-                            {moment(txTime).utc().format('HH:mm:ss A')} GMT
-                          </Text>
-                        </div>
-                      </td>
-                    )}
+                    <td>
+                      <div className={`flex flex-col justify-end p-4 ${txTime ? 'w-[200px]' : ''}`}>
+                        <Text textAlign="right" color={theme`colors.color9`}>
+                          {txTime ? moment(Number(txTime)).format('DD MMM, YYYY') : '-'}
+                        </Text>
+                        <Text fontSize="12px" textAlign="right" color={theme`colors.color6`}>
+                          {txTime ? `${moment(Number(txTime)).utc().format('HH:mm:ss A')} GMT` : '-'}
+                        </Text>
+                      </div>
+                    </td>
+
                     <td>
                       <div className="flex justify-end p-4">
-                        {/* <Text textAlign="right" color={theme`colors.color9`}>
-                          {amount ? numberWithCommas(calculateNetAmount(amount, business_fee_percentage)) : 0} GLCH
-                        </Text> */}
                         <Text textAlign="right" color={theme`colors.color9`}>
                           {txAmount ? numberWithCommas(fromWei(txAmount)) : 0} GLCH
                         </Text>
@@ -185,7 +200,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
               })
             ) : (
               <tr>
-                <td colSpan={5}>
+                <td colSpan={6}>
                   <div className="empty-wrapper">
                     <div className="empty-message">No data</div>
                   </div>
@@ -194,7 +209,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
             )}
           </tbody>
         </StyledTable>
-      </div>
+      </StyledTableWrapper>
     </div>
   )
 }
