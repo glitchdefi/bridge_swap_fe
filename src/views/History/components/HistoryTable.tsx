@@ -113,13 +113,14 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                   amount,
                   net_amount,
                   glitch_timestamp,
+                  eth_timestamp,
                 } = t
                 const explorerUrl = addressSelected?.isEthAddress
                   ? `${chain?.blockExplorers?.default?.url}/tx/${tx_eth_hash}`
                   : `${GLITCH_EXPLORER}/tx/${extrinsic_hash}`
                 const txHash = addressSelected?.isEthAddress ? tx_eth_hash : extrinsic_hash
                 const txAmount = addressSelected?.isEthAddress ? amount : net_amount
-                const txTime = addressSelected?.isEthAddress ? null : glitch_timestamp
+                const txTime = addressSelected?.isEthAddress ? eth_timestamp : glitch_timestamp
 
                 return (
                   <tr key={`${i}`}>
@@ -175,10 +176,18 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                     <td>
                       <div className={`flex flex-col justify-end p-4 ${txTime ? 'w-[200px]' : ''}`}>
                         <Text textAlign="right" color={theme`colors.color9`}>
-                          {txTime ? moment(Number(txTime)).format('DD MMM, YYYY') : '-'}
+                          {txTime
+                            ? moment(Number(txTime) * 1000)
+                                .utc()
+                                .format('DD MMM, YYYY')
+                            : '-'}
                         </Text>
                         <Text fontSize="12px" textAlign="right" color={theme`colors.color6`}>
-                          {txTime ? `${moment(Number(txTime)).utc().format('HH:mm:ss A')} GMT` : '-'}
+                          {txTime
+                            ? `${moment(Number(txTime) * 1000)
+                                .utc()
+                                .format('h:mm:ss A')} GMT`
+                            : '-'}
                         </Text>
                       </div>
                     </td>
