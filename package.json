@@ -6,6 +6,7 @@
     "dev": "next dev",
     "dev:prod": "dotenv -e .env.production.local next dev",
     "build": "next build",
+    "build:dev": "dotenv -e .env.development.local next build",
     "start": "next start -p 3001",
     "build-prod": "npm run build && next start -p 3001",
     "check-types": "tsc --noemit",

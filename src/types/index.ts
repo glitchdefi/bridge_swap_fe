@@ -59,6 +59,7 @@ export type TransactionHistory = {
   tx_eth_hash: string
   tx_glitch_hash: string
   glitch_timestamp: string
+  eth_timestamp: string
 }
 
 export interface TransferError {
