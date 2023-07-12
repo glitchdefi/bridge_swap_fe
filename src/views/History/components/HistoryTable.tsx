@@ -120,7 +120,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                   : `${GLITCH_EXPLORER}/tx/${extrinsic_hash}`
                 const txHash = addressSelected?.isEthAddress ? tx_eth_hash : extrinsic_hash
                 const txAmount = addressSelected?.isEthAddress ? amount : net_amount
-                const txTime = addressSelected?.isEthAddress ? eth_timestamp : glitch_timestamp
+                const txTime = addressSelected?.isEthAddress ? Number(eth_timestamp) * 1000 : Number(glitch_timestamp)
 
                 return (
                   <tr key={`${i}`}>
@@ -176,18 +176,10 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                     <td>
                       <div className={`flex flex-col justify-end p-4 ${txTime ? 'w-[200px]' : ''}`}>
                         <Text textAlign="right" color={theme`colors.color9`}>
-                          {txTime
-                            ? moment(Number(txTime) * 1000)
-                                .utc()
-                                .format('DD MMM, YYYY')
-                            : '-'}
+                          {txTime ? moment(txTime).utc().format('DD MMM, YYYY') : '-'}
                         </Text>
                         <Text fontSize="12px" textAlign="right" color={theme`colors.color6`}>
-                          {txTime
-                            ? `${moment(Number(txTime) * 1000)
-                                .utc()
-                                .format('h:mm:ss A')} GMT`
-                            : '-'}
+                          {txTime ? `${moment(txTime).utc().format('h:mm:ss A')} GMT` : '-'}
                         </Text>
                       </div>
                     </td>
