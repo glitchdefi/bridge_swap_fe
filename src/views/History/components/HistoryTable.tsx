@@ -97,7 +97,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
               <th className="text-left">Tx hash</th>
               <th className="text-left">From (network)</th>
               <th className="text-left">To (network)</th>
-              <th className="text-right">Time</th>
+              <th className="text-right w-[200px]">Time</th>
               <th className="text-end">Amount</th>
               <th className="text-center">Status</th>
             </tr>
@@ -174,7 +174,7 @@ export const HistoryTable: React.FC<HistoryTableProps> = (props) => {
                       </div>
                     </td>
                     <td>
-                      <div className={`flex flex-col justify-end p-4 ${txTime ? 'w-[200px]' : ''}`}>
+                      <div className="flex flex-col justify-end p-4 w-[200px]">
                         <Text textAlign="right" color={theme`colors.color9`}>
                           {txTime ? moment(txTime).utc().format('DD MMM, YYYY') : '-'}
                         </Text>
